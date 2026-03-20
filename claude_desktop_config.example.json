@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "intervals-icu": {
+      "command": "python",
+      "args": ["/absolute/path/to/intervals-icu-mcp/server.py"],
+      "env": {
+        "INTERVALS_API_KEY": "your_api_key_here",
+        "INTERVALS_ATHLETE_ID": "your_athlete_id_here"
+      }
+    }
+  }
+}
