@@ -1,5 +1,48 @@
 # intervals.icu MCP Server - Quick Start Guide
 
+🎉 Version 2.0.1 - Extended Edition with Authentication Fix
+This MCP server provides comprehensive access to intervals.icu with 36 API tools covering:
+
+✅ Full CRUD operations (Create, Read, Update, Delete)
+✅ Wellness tracking and bulk updates
+✅ Calendar and event management
+✅ Complete workout library control
+✅ Training plan management
+✅ Coaching features
+✅ Activity management and CSV export
+✅ Fitness trend analysis and power curves
+
+⚠️ New in v2.0.1: Critical authentication fix for 403 errors + required INTERVALS_API_BASE_URL environment variable!
+New in v2.0: Write capabilities, workout library, training plans, coaching tools, and bulk operations!
+
+⚠️ IMPORTANT: Authentication Requirements (v2.0.1)
+Version 2.0.1 includes a critical authentication fix. If you're experiencing 403 Forbidden errors, you MUST:
+
+Use the latest server.py (includes proper Basic Auth with base64 encoding)
+Add all THREE required environment variables (the third one is new!)
+Use full Python path (e.g., /usr/local/bin/python3 not just python)
+Include the i prefix in athlete ID (e.g., i230309 not 230309)
+
+Required Configuration (Updated for v2.0.1)
+json{
+  "mcpServers": {
+    "intervals-icu": {
+      "command": "/usr/local/bin/python3",
+      "args": ["/FULL/PATH/TO/intervals-icu-mcp/server.py"],
+      "env": {
+        "INTERVALS_API_KEY": "YOUR_API_KEY",
+        "INTERVALS_ATHLETE_ID": "YOUR_ATHLETE_ID",
+        "INTERVALS_API_BASE_URL": "https://intervals.icu/api/v1"
+      }
+    }
+  }
+}
+Critical changes:
+
+✅ INTERVALS_API_BASE_URL is now REQUIRED (new in v2.0.1)
+✅ Full Python path required (e.g., /usr/local/bin/python3)
+✅ Athlete ID must include i prefix (e.g., i230309)
+
 ## 🎉 Version 2.0 - Extended Edition
 
 This MCP server provides **comprehensive access to intervals.icu** with 36 API tools covering:

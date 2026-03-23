@@ -1,12 +1,21 @@
 {
   "mcpServers": {
     "intervals-icu": {
-      "command": "python",
-      "args": ["/absolute/path/to/intervals-icu-mcp/server.py"],
+      "command": "/usr/local/bin/python3",
+      "args": [
+        "/ABSOLUTE/PATH/TO/server.py"
+      ],
       "env": {
-        "INTERVALS_API_KEY": "your_api_key_here",
-        "INTERVALS_ATHLETE_ID": "your_athlete_id_here"
+        "INTERVALS_API_KEY": "YOUR_API_KEY_FROM_INTERVALS_ICU",
+        "INTERVALS_ATHLETE_ID": "iXXXXXX",
+        "INTERVALS_API_BASE_URL": "https://intervals.icu/api/v1"
       }
     }
+  },
+    "preferences": {
+    "coworkWebSearchEnabled": true,
+    "coworkScheduledTasksEnabled": true,
+    "ccdScheduledTasksEnabled": true,
+    "sidebarMode": "chat"
   }
 }

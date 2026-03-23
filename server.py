@@ -59,16 +59,25 @@ async def make_request(
     """
     api_key, athlete_id = get_credentials()
     
+    # Get base URL from environment or use default
+    api_base_url = os.getenv("INTERVALS_API_BASE_URL", "https://intervals.icu/api/v1")
+    
     if use_activity_endpoint:
         # For activity-specific endpoints like /api/v1/activity/{id}
-        url = f"https://intervals.icu/api/v1/{endpoint}"
+        url = f"{api_base_url}/{endpoint}"
     else:
         # Standard athlete endpoints
-        base_url = f"https://intervals.icu/api/v1/athlete/{athlete_id}"
-        url = f"{base_url}/{endpoint}" if endpoint else base_url
+        athlete_base_url = f"{api_base_url}/athlete/{athlete_id}"
+        url = f"{athlete_base_url}/{endpoint}" if endpoint else athlete_base_url
+    
+    # Create proper Basic auth header
+    # Username is literally "API_KEY", password is the actual API key
+    auth_string = f"API_KEY:{api_key}"
+    auth_bytes = auth_string.encode('ascii')
+    auth_b64 = base64.b64encode(auth_bytes).decode('ascii')
     
     headers = {
-        "Authorization": f"Basic {api_key}",
+        "Authorization": f"Basic {auth_b64}",
         "Accept": "application/json"
     }
     
@@ -1001,6 +1010,40 @@ async def call_tool(name: str, arguments: Any) -> list[TextContent]:
 async def main():
     """Run the MCP server."""
     global http_client
+    
+    # Print debugging information on startup
+    import sys
+    print("=" * 60, file=sys.stderr)
+    print("INTERVALS.ICU MCP SERVER - STARTUP DEBUG INFO", file=sys.stderr)
+    print("=" * 60, file=sys.stderr)
+    
+    # Check environment variables
+    api_key = os.getenv("INTERVALS_API_KEY")
+    athlete_id = os.getenv("INTERVALS_ATHLETE_ID")
+    base_url = os.getenv("INTERVALS_API_BASE_URL", "https://intervals.icu/api/v1")
+    
+    print(f"API Key Present: {'✓ YES' if api_key else '✗ NO'}", file=sys.stderr)
+    if api_key:
+        print(f"API Key (first 8 chars): {api_key[:8]}...", file=sys.stderr)
+    
+    print(f"Athlete ID: {athlete_id if athlete_id else '✗ NOT SET'}", file=sys.stderr)
+    print(f"Base URL: {base_url}", file=sys.stderr)
+    
+    # Test basic auth encoding
+    if api_key:
+        auth_string = f"API_KEY:{api_key}"
+        auth_bytes = auth_string.encode('ascii')
+        auth_b64 = base64.b64encode(auth_bytes).decode('ascii')
+        print(f"Auth Header (first 20 chars): Basic {auth_b64[:20]}...", file=sys.stderr)
+    
+    # Test URL construction
+    if athlete_id:
+        test_url = f"{base_url}/athlete/{athlete_id}"
+        print(f"Test Athlete URL: {test_url}", file=sys.stderr)
+    
+    print("=" * 60, file=sys.stderr)
+    print("Starting MCP server...", file=sys.stderr)
+    print("=" * 60, file=sys.stderr)
     
     async with httpx.AsyncClient() as client:
         http_client = client
