@@ -2,6 +2,19 @@
 
 All notable changes to the intervals.icu MCP Server.
 
+## [2.0.1] - 2026-03-23
+
+### 🔧 Critical Authentication Fix
+
+Fixed authentication issues causing 403 Forbidden errors with intervals.icu API.
+
+### Fixed
+
+#### Authentication
+- **Critical**: Fixed Basic Authentication implementation to use proper base64 encoding
+  - Changed from `f"Basic {api_key}"` to proper `base64.b64encode(f"API_KEY:{api_key}".encode('ascii'))`
+  - Authentication now correctly follows intervals.icu API spec (username: "API_KEY", password: actual key
+
 ## [2.0.0] - 2025-03-22
 
 ### 🎉 Major Release - Comprehensive API Coverage
