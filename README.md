@@ -210,6 +210,7 @@ Add the MCP server to your Claude Desktop configuration file:
 - `/absolute/path/to/intervals-icu-mcp/server.py` with the actual path to server.py
 - `your_api_key_here` with your intervals.icu API key
 - `your_athlete_id_here` with your athlete ID
+- A known issue on MAC is that you need to add the full path to python and also specify python version: "/usr/local/bin/python3"
 
 ### 5. Restart Claude Desktop
 
