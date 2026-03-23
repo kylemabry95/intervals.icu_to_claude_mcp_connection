@@ -186,31 +186,82 @@ You should see successful API calls to all endpoints.
 
 ### 4. Configure Claude Desktop
 
-Add the MCP server to your Claude Desktop configuration file:
+## ⚠️ Critical Setup Notes (v2.0.1)
 
-**MacOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`  
-**Windows**: `%APPDATA%/Claude/claude_desktop_config.json`
+### Authentication Fix
+
+**Version 2.0.1 includes a critical authentication fix.** If you're experiencing 403 Forbidden errors, ensure you're using the latest `server.py` and have all three required environment variables configured.
+
+### Required Environment Variables
+
+Your `claude_desktop_config.json` **MUST** include all three environment variables:
 
 ```json
 {
   "mcpServers": {
     "intervals-icu": {
-      "command": "python",
-      "args": ["/absolute/path/to/intervals-icu-mcp/server.py"],
+      "command": "/usr/local/bin/python3",
+      "args": ["/absolute/path/to/server.py"],
       "env": {
-        "INTERVALS_API_KEY": "your_api_key_here",
-        "INTERVALS_ATHLETE_ID": "your_athlete_id_here"
+        "INTERVALS_API_KEY": "your_actual_api_key",
+        "INTERVALS_ATHLETE_ID": "i230309",
+        "INTERVALS_API_BASE_URL": "https://intervals.icu/api/v1"
       }
     }
   }
 }
 ```
 
-**Important**: Replace:
-- `/absolute/path/to/intervals-icu-mcp/server.py` with the actual path to server.py
-- `your_api_key_here` with your intervals.icu API key
-- `your_athlete_id_here` with your athlete ID
-- A known issue on MAC is that you need to add the full path to python and also specify python version: "/usr/local/bin/python3"
+**Critical:**
+- `INTERVALS_API_BASE_URL` is **required** (added in v2.0.1)
+- Athlete ID **must** include the `i` prefix (e.g., `i230309` not `230309`)
+- Use full Python path (e.g., `/usr/local/bin/python3` not just `python`)
+
+### Testing Your API Key
+
+Before configuring Claude Desktop, verify your API key works:
+
+```bash
+curl -u API_KEY:your_api_key_here https://intervals.icu/api/v1/athlete/your_athlete_id
+```
+
+If this returns `{"status":403,"error":"Access denied"}`, your API key is invalid - regenerate it in intervals.icu settings.
+
+### Startup Debug Output
+
+The server includes debug output in Claude Desktop logs to help troubleshoot connection issues:
+
+```
+============================================================
+INTERVALS.ICU MCP SERVER - STARTUP DEBUG INFO
+============================================================
+API Key Present: ✓ YES
+API Key (first 8 chars): ckw1e9g3...
+Athlete ID: i230309
+Base URL: https://intervals.icu/api/v1
+Auth Header (first 20 chars): Basic QVBJX0tFWTpja3cx...
+Test Athlete URL: https://intervals.icu/api/v1/athlete/i230309
+============================================================
+```
+
+**Check logs at:**
+- **macOS:** `~/Library/Logs/Claude/`
+- **Windows:** `%APPDATA%\Claude\logs\`
+
+### Common Issues
+
+**403 Forbidden Errors:**
+1. API key is invalid → Regenerate in intervals.icu settings
+2. Missing `INTERVALS_API_BASE_URL` → Add to config
+3. Wrong athlete ID format → Must include `i` prefix
+
+**Server Not Connecting:**
+1. Verify Python path is absolute and correct
+2. Ensure all three environment variables are set
+3. Check Claude Desktop logs for errors
+4. Restart Claude Desktop completely after config changes
+
+For detailed troubleshooting, see [SETUP_NOTES.md](SETUP_NOTES.md).
 
 ### 5. Restart Claude Desktop
 
