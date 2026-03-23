@@ -4,32 +4,44 @@ A Model Context Protocol (MCP) server that provides Claude Desktop with access t
 
 ## Features
 
-The server provides access to the following intervals.icu APIs:
+The server provides comprehensive access to intervals.icu APIs:
 
-### 🏃 Athlete Profile
+### 👤 **Athlete Profile**
 - **get_athlete_profile**: Get athlete information including FTP, weight, training zones, and settings
 
-### 💪 Wellness & Recovery
-- **get_wellness_data**: Access daily wellness metrics:
+### 💪 **Wellness & Recovery**
+- **get_wellness_data**: Access daily wellness metrics for date ranges
+- **get_wellness_single**: Get wellness data for a specific date
+- **update_wellness**: Update wellness data for a specific date
+- **update_wellness_bulk**: Batch update wellness entries
+
+**Wellness metrics include:**
   - Sleep quality and duration
   - HRV (Heart Rate Variability)
   - Resting heart rate
   - Weight and body composition
-  - Subjective wellness scores
+  - Subjective wellness scores (fatigue, soreness, stress, motivation)
   - Readiness and recovery metrics
+  - CTL, ATL, TSB (fitness, fatigue, form)
 
-### 🚴 Training Activities
-- **get_activities**: Retrieve workouts/activities with detailed metrics:
-  - Power, heart rate, pace data
+### 🚴 **Training Activities**
+- **get_activities**: Retrieve workouts for date ranges with detailed metrics
+- **get_activities_csv**: Export all activities to CSV
+- **get_activity_details**: Get granular data including power/HR streams and detected intervals
+- **update_activity**: Modify activity metadata (name, description, type)
+- **delete_activity**: Remove an activity
+
+**Activity data includes:**
+  - Power, heart rate, pace, cadence data
   - Training stress scores (TSS)
   - Intensity factors
   - Duration and distance
-  - Activity type (cycling, running, swimming, etc.)
+  - Detected intervals
+  - Power curves
+  - Time in zones
 
-- **get_activity_details**: Get granular data for specific activities including power/HR streams
-
-### 📊 Fitness Analytics
-- **get_fitness_trends**: Analyze training load and form:
+### 📊 **Fitness Analytics**
+- **get_fitness_trends**: Analyze training load and form over time
   - CTL (Chronic Training Load / Fitness)
   - ATL (Acute Training Load / Fatigue)  
   - TSB (Training Stress Balance / Form)
@@ -37,9 +49,35 @@ The server provides access to the following intervals.icu APIs:
 
 - **get_power_curve**: Access best power efforts across different durations
 
-### 📅 Planning
-- **get_events**: Retrieve planned races and key events
-- **get_planned_workouts**: Access upcoming scheduled training sessions
+### 📅 **Calendar & Event Management**
+- **get_calendars**: List all calendars
+- **get_events**: Retrieve planned races, workouts, and notes
+- **get_event**: Get specific event details
+- **create_event**: Add new calendar events (races, workouts, notes)
+- **update_event**: Modify existing events
+- **delete_event**: Remove calendar events
+- **get_planned_workouts**: Filter for upcoming scheduled training sessions
+
+### 📚 **Workout Library**
+- **get_folders**: List all workout library folders
+- **create_folder**: Create new workout folders
+- **update_folder**: Modify folder metadata
+- **delete_folder**: Remove folders
+- **get_workouts**: List all workouts in library
+- **get_workout**: Get specific workout details
+- **create_workout**: Add new workouts to library
+- **update_workout**: Modify existing workouts
+- **delete_workout**: Remove workouts
+
+### 📈 **Training Plans**
+- **get_training_plans**: List all training plans
+- **create_training_plan**: Create new training plans
+- **update_training_plan**: Modify existing plans
+- **delete_training_plan**: Remove training plans
+
+### 👥 **Coaching Features**
+- **get_coached_athletes**: List athletes you coach with current fitness metrics
+- **get_wellness_summary**: Get wellness overview for coached athletes
 
 ## Installation
 
@@ -103,12 +141,15 @@ Once configured, you can ask Claude questions like:
 - "How has my sleep quality been this month?"
 - "Show me my resting heart rate trend"
 - "Am I getting enough recovery based on my wellness data?"
+- "Update my wellness data for today with weight 70kg and HRV 65ms"
 
 ### Training Analysis
 - "Summarize my training volume for the past 30 days"
 - "What were my hardest workouts this week?"
 - "Compare my cycling vs running volume this month"
 - "Show me my longest activities this year"
+- "Export all my activities to CSV"
+- "Rename my activity from yesterday to 'Easy Recovery Ride'"
 
 ### Fitness Trends
 - "What's my current fitness (CTL) and form (TSB)?"
@@ -121,100 +162,207 @@ Once configured, you can ask Claude questions like:
 - "Show me my power curve improvements over time"
 - "What were my best efforts at different durations?"
 
-### Planning
+### Calendar & Planning
 - "What races do I have coming up?"
 - "Show me my planned workouts for next week"
 - "What's my training schedule looking like?"
+- "Create a new workout event for tomorrow: 60min Z2 ride"
+- "Add a race event for the marathon on April 15th"
+- "Delete the workout planned for next Tuesday"
+
+### Workout Library
+- "List all my workout folders"
+- "Show me all workouts in my library"
+- "Create a new folder called 'VO2max Sessions'"
+- "Add a new workout: 4x8min @ 110% FTP with 4min rest"
+- "Get details for my Sweet Spot workout"
+
+### Training Plans
+- "Show me all my training plans"
+- "Create a new 12-week marathon plan"
+
+### Coaching (if you coach athletes)
+- "List all the athletes I coach"
+- "Show wellness summary for my coached athletes"
+- "What's the fitness trend for athlete John Doe?"
 
 ### Combined Analysis
 - "How has my fitness progressed leading up to my next race?"
 - "Is my wellness data suggesting I need more recovery?"
 - "Analyze whether my training load matches my upcoming events"
+- "Compare my planned vs completed workouts this week"
 
 ## API Reference
 
-### Tool: get_athlete_profile
-Returns athlete profile information.
+### Athlete Profile
 
-**Parameters**: None
-
-**Returns**: Athlete profile with FTP, weight, zones, and settings
-
----
-
-### Tool: get_wellness_data
-Get wellness metrics for a date range.
-
-**Parameters**:
-- `start_date` (optional): Start date in YYYY-MM-DD format (default: 30 days ago)
-- `end_date` (optional): End date in YYYY-MM-DD format (default: today)
-
-**Returns**: Array of daily wellness entries with HRV, sleep, weight, etc.
+**get_athlete_profile**
+- Parameters: None
+- Returns: Athlete profile with FTP, weight, zones, and settings
 
 ---
 
-### Tool: get_activities
-Get training activities for a date range.
+### Wellness Data
 
-**Parameters**:
-- `start_date` (optional): Start date in YYYY-MM-DD format (default: 30 days ago)
-- `end_date` (optional): End date in YYYY-MM-DD format (default: today)
+**get_wellness_data**
+- Parameters: `start_date` (optional), `end_date` (optional)
+- Returns: Array of daily wellness entries with HRV, sleep, weight, etc.
 
-**Returns**: Array of activities with metrics
+**get_wellness_single**
+- Parameters: `date` (required, YYYY-MM-DD)
+- Returns: Wellness data for specific date
 
----
+**update_wellness**
+- Parameters: `date` (required), `data` (required, object with wellness fields)
+- Returns: Updated wellness entry
 
-### Tool: get_activity_details
-Get detailed data for a specific activity.
-
-**Parameters**:
-- `activity_id` (required): The activity ID
-
-**Returns**: Detailed activity data including streams
-
----
-
-### Tool: get_fitness_trends
-Get CTL/ATL/TSB trend data.
-
-**Parameters**:
-- `start_date` (optional): Start date in YYYY-MM-DD format (default: 90 days ago)
-- `end_date` (optional): End date in YYYY-MM-DD format (default: today)
-
-**Returns**: Array of fitness metrics by date
+**update_wellness_bulk**
+- Parameters: `entries` (required, array of wellness objects with 'id' and fields)
+- Returns: Updated wellness entries
 
 ---
 
-### Tool: get_events
-Get planned events (races, key workouts).
+### Activities
 
-**Parameters**:
-- `start_date` (optional): Start date in YYYY-MM-DD format (default: today)
-- `end_date` (optional): End date in YYYY-MM-DD format (default: 90 days from today)
+**get_activities**
+- Parameters: `start_date` (optional), `end_date` (optional)
+- Returns: Array of activities with metrics
 
-**Returns**: Array of calendar events
+**get_activities_csv**
+- Parameters: None
+- Returns: All activities in CSV format
+
+**get_activity_details**
+- Parameters: `activity_id` (required), `include_intervals` (optional, default: true)
+- Returns: Detailed activity data including streams and intervals
+
+**update_activity**
+- Parameters: `activity_id` (required), `data` (required, object with fields to update)
+- Returns: Updated activity
+
+**delete_activity**
+- Parameters: `activity_id` (required)
+- Returns: Success confirmation
 
 ---
 
-### Tool: get_planned_workouts
-Get planned workouts from the calendar.
+### Fitness Trends
 
-**Parameters**:
-- `start_date` (optional): Start date in YYYY-MM-DD format (default: today)
-- `end_date` (optional): End date in YYYY-MM-DD format (default: 14 days from today)
-
-**Returns**: Array of planned workout events
+**get_fitness_trends**
+- Parameters: `start_date` (optional), `end_date` (optional)
+- Returns: Array of fitness metrics (CTL, ATL, TSB, ramp rate) by date
 
 ---
 
-### Tool: get_power_curve
-Get power curve data (best efforts).
+### Calendar & Events
 
-**Parameters**:
-- `start_date` (optional): Start date in YYYY-MM-DD format (default: 90 days ago)
-- `end_date` (optional): End date in YYYY-MM-DD format (default: today)
+**get_calendars**
+- Parameters: None
+- Returns: List of all calendars
 
-**Returns**: Power curve data for different durations
+**get_events**
+- Parameters: `start_date` (optional), `end_date` (optional), `calendar_id` (optional)
+- Returns: Array of calendar events
+
+**get_event**
+- Parameters: `event_id` (required)
+- Returns: Event details
+
+**create_event**
+- Parameters: `event_data` (required, object with start_date_local, category, name, etc.)
+- Returns: Created event
+
+**update_event**
+- Parameters: `event_id` (required), `event_data` (required)
+- Returns: Updated event
+
+**delete_event**
+- Parameters: `event_id` (required)
+- Returns: Success confirmation
+
+**get_planned_workouts**
+- Parameters: `start_date` (optional), `end_date` (optional)
+- Returns: Array of planned workout events (filters WORKOUT category)
+
+---
+
+### Workout Library
+
+**get_folders**
+- Parameters: None
+- Returns: All workout folders and their contents
+
+**create_folder**
+- Parameters: `name` (required)
+- Returns: Created folder
+
+**update_folder**
+- Parameters: `folder_id` (required), `data` (required)
+- Returns: Updated folder
+
+**delete_folder**
+- Parameters: `folder_id` (required)
+- Returns: Success confirmation
+
+**get_workouts**
+- Parameters: None
+- Returns: All workouts in library
+
+**get_workout**
+- Parameters: `workout_id` (required)
+- Returns: Workout details
+
+**create_workout**
+- Parameters: `workout_data` (required, object with name, description, folder_id, type)
+- Returns: Created workout
+
+**update_workout**
+- Parameters: `workout_id` (required), `workout_data` (required)
+- Returns: Updated workout
+
+**delete_workout**
+- Parameters: `workout_id` (required)
+- Returns: Success confirmation
+
+---
+
+### Training Plans
+
+**get_training_plans**
+- Parameters: None
+- Returns: All training plans
+
+**create_training_plan**
+- Parameters: `plan_data` (required)
+- Returns: Created plan
+
+**update_training_plan**
+- Parameters: `plan_id` (required), `plan_data` (required)
+- Returns: Updated plan
+
+**delete_training_plan**
+- Parameters: `plan_id` (required)
+- Returns: Success confirmation
+
+---
+
+### Coaching
+
+**get_coached_athletes**
+- Parameters: None
+- Returns: List of athletes you coach with current fitness metrics
+
+**get_wellness_summary**
+- Parameters: None
+- Returns: Wellness overview for coached athletes
+
+---
+
+### Performance Analysis
+
+**get_power_curve**
+- Parameters: `start_date` (optional), `end_date` (optional)
+- Returns: Power curve data for different durations
 
 ## Troubleshooting
 
