@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "intervals-icu-mcp"
-version = "1.0.0"
+version = "2.1.0"
 description = "MCP server for intervals.icu athlete training data"
 readme = "README.md"
 requires-python = ">=3.10"
