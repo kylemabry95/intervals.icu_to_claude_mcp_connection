@@ -1,6 +1,6 @@
 # intervals.icu MCP Server
 
-[![Version](https://img.shields.io/badge/version-2.0.1-blue.svg)](https://github.com/kylemabry95/intervals.icu_to_claude_mcp_connection)
+[![Version](https://img.shields.io/badge/version-2.1.0-blue.svg)](https://github.com/kylemabry95/intervals.icu_to_claude_mcp_connection)
 [![Python](https://img.shields.io/badge/python-3.10+-green.svg)](https://www.python.org/downloads/)
 [![License](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
 [![API Coverage](https://img.shields.io/badge/API%20coverage-~95%25-brightgreen.svg)](API_REFERENCE.md)
@@ -40,23 +40,23 @@ A Model Context Protocol (MCP) server that gives Claude Desktop **complete acces
 
 ### Version Comparison
 
-| Feature | v1.0 | v2.0.1 |
-|---------|------|--------|
-| Total Tools | 8 | 36 |
-| Read Operations | ✅ | ✅ |
-| Write Operations | ❌ | ✅ |
-| Update Operations | ❌ | ✅ |
-| Delete Operations | ❌ | ✅ |
-| Bulk Operations | ❌ | ✅ |
-| CSV Export | ❌ | ✅ |
-| Workout Library | ❌ | ✅ (9 tools) |
-| Training Plans | ❌ | ✅ (4 tools) |
-| Coaching Features | ❌ | ✅ (2 tools) |
-| Calendar Management | Read-only | Full CRUD |
-| Wellness Management | Read-only | Full CRUD + Bulk |
-| Activity Management | Read-only | Full CRUD + CSV |
-| API Coverage | ~25% | ~95% |
-| Lines of Code | 361 | 1,016 |
+| Feature | v1.0 | v2.1 |
+|---------|------|------|
+| **Total Tools** | 8 | 36 |
+| **Read Operations** | ✅ | ✅ |
+| **Write Operations** | ❌ | ✅ |
+| **Update Operations** | ❌ | ✅ |
+| **Delete Operations** | ❌ | ✅ |
+| **Bulk Operations** | ❌ | ✅ |
+| **CSV Export** | ❌ | ✅ |
+| **Workout Library** | ❌ | ✅ (9 tools) |
+| **Training Plans** | ❌ | ✅ (4 tools) |
+| **Coaching Features** | ❌ | ✅ (2 tools) |
+| **Calendar Management** | Read-only | Full CRUD |
+| **Wellness Management** | Read-only | Full CRUD + Bulk |
+| **Activity Management** | Read-only | Full CRUD + CSV |
+| **API Coverage** | ~25% | ~95% |
+| **Lines of Code** | 361 | 1,106 |
 
 ---
 
@@ -110,12 +110,12 @@ Metrics covered: sleep quality and duration, HRV, resting heart rate, weight, bo
 
 | Metric | Value |
 |--------|-------|
-| Total API Tools | 36 |
-| API Coverage | ~95% of public intervals.icu APIs |
-| CRUD Support | Full (Create, Read, Update, Delete) |
-| Lines of Code | 1,016 |
-| Documentation Files | 6 |
-| Supported HTTP Methods | GET, POST, PUT, DELETE |
+| **Total API Tools** | 36 |
+| **API Coverage** | ~95% of public intervals.icu APIs |
+| **CRUD Support** | Full (Create, Read, Update, Delete) |
+| **Code Lines** | 1,106 |
+| **Documentation** | 7 comprehensive guides |
+| **Supported Operations** | GET, POST, PUT, DELETE |
 
 ---
 
@@ -248,6 +248,12 @@ For a full troubleshooting guide, see [QUICKSTART.md](QUICKSTART.md).
 - API credentials are stored locally in the Claude Desktop config file
 - All requests go directly from your machine to intervals.icu — no third parties
 - Claude processes responses locally on your machine
+- Proper HTTP Basic Auth encoding (base64) for API key transmission
+- All user-supplied IDs and dates are validated before use to prevent injection
+- Client-side rate limiting (10 req/sec) protects against accidental API abuse
+- HTTP requests enforce timeouts (30s request, 10s connect) and connection pool limits
+- Error messages are sanitized — internal paths and stack traces are never exposed to the client
+- `.gitignore` prevents accidental commit of `.env` files and credential configs
 
 **Best practices:**
 - Never share your API key or config file
@@ -265,6 +271,29 @@ When contributing:
 - Add docstrings to all new tools
 - Update relevant documentation (README, QUICKSTART, API_REFERENCE)
 - Add test cases to `test_server.py`
+
+---
+
+## 📋 Version History
+
+### v2.1.0 - Security Hardening (March 2025)
+- ✅ Fixed Basic Auth encoding and removed credential leakage in debug logs
+- ✅ Added input validation (dates, IDs), rate limiting, HTTP timeouts
+- ✅ Sanitized error responses; added `.gitignore` for secrets protection
+
+### v2.0.0 - Major Release (March 2025)
+- ✅ Extended from 8 to 36 API tools (4.5x increase)
+- ✅ Added full CRUD operations on all major entities
+- ✅ Workout Library management (9 new tools)
+- ✅ Training Plans support (4 new tools)
+- ✅ Coaching features (2 new tools)
+- ✅ Bulk operations and CSV export
+- ✅ Comprehensive documentation (7 guides)
+
+### v1.0.0 - Initial Release (March 2025)
+- ✅ Basic read-only access to 8 core APIs
+
+See [CHANGELOG.md](CHANGELOG.md) for detailed version history.
 
 ---
 
@@ -297,4 +326,4 @@ Built for the [Model Context Protocol](https://modelcontextprotocol.io/) to inte
 
 ⭐ Star this repo if it's useful for your training!
 
-**v2.0.1** | [Changelog](CHANGELOG.md) | [Quick Start](QUICKSTART.md) | [API Reference](API_REFERENCE.md)
+**v2.1.0** | [Changelog](CHANGELOG.md) | [Quick Start](QUICKSTART.md) | [API Reference](API_REFERENCE.md)

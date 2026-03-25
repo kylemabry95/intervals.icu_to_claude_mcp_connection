@@ -581,7 +581,7 @@ Key activity summary fields:
 
 ## Rate Limits & Best Practices
 
-- **Rate Limiting**: Be respectful with API calls; no official rate limit published
+- **Rate Limiting**: No official rate limit published by intervals.icu. The MCP server enforces client-side rate limiting (10 req/sec token bucket) to prevent accidental API abuse
 - **Caching**: Cache data locally when possible
 - **Bulk Operations**: Use bulk endpoints (`wellness-bulk`) when updating multiple records
 - **Webhooks**: Prefer webhooks over polling for real-time updates
@@ -621,5 +621,5 @@ Key activity summary fields:
 
 ---
 
-**Last Updated**: March 2025  
+**Last Updated**: March 2025 (v2.1.0)  
 **API Version**: v1

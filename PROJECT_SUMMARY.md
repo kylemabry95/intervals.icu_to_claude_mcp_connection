@@ -7,24 +7,24 @@ Successfully extended the intervals.icu MCP server from a basic read-only implem
 ## 📊 Project Metrics
 
 ### Code Statistics
-- **Server Code**: 1,016 lines (up from 361 lines)
+- **Server Code**: 1,106 lines (up from 361 lines)
 - **Total Tools**: 36 (up from 8) - **4.5x increase**
 - **API Coverage**: ~95% of public intervals.icu APIs
-- **Functions**: 5 core functions
+- **Functions**: 8 core functions (including validation, rate limiting, and HTTP client management)
 - **Documentation**: 7 comprehensive files
 
 ### File Inventory
-1. **server.py** (1,016 lines) - Extended MCP server implementation
+1. **server.py** (1,106 lines) - Extended MCP server implementation
 2. **README.md** - Comprehensive user guide with examples
 3. **QUICKSTART.md** (383 lines) - Fast setup and workflows
 4. **API_REFERENCE.md** - Complete intervals.icu API documentation
 5. **CHANGELOG.md** - Version history and feature additions
 6. **EXTENSION_SUMMARY.md** - Technical architecture details
-7. **GITHUB_DESCRIPTION.txt** - Repository description (282 chars)
-8. **requirements.txt** - Python dependencies
-9. **pyproject.toml** - Package configuration
-10. **test_server.py** - Test suite for validation
-11. **.gitignore** - Git exclusions
+7. **requirements.txt** - Python dependencies
+8. **pyproject.toml** - Package configuration
+9. **test_server.py** - Test suite for validation
+10. **.gitignore** - Git exclusions
+11. **claude_desktop_config.example.json** - Example configuration
 
 ## ✨ Features Delivered
 
@@ -206,17 +206,18 @@ async def make_request(
 - Comprehensive error handling
 
 ### Authentication
-- Basic auth with API key
+- Proper HTTP Basic Auth encoding (`base64(API_KEY:{key})`)
 - Environment variable storage
 - Secure credential management
 - Athlete ID (0) pattern for authenticated user
 
 ### Error Handling
-- Try-catch blocks on all operations
-- Input validation
+- Typed exception handling: `ValueError`, `HTTPStatusError`, `TimeoutException`
+- Sanitized error messages — no internal paths or stack traces exposed
+- Unexpected errors logged server-side via `logger.exception()`
+- Input validation on all dates (YYYY-MM-DD) and IDs (safe character pattern)
 - Required parameter checks
-- HTTP error catching
-- User-friendly error messages
+- HTTP status code handling
 
 ## 🎯 Quality Metrics
 
@@ -247,7 +248,13 @@ async def make_request(
 ## 🔒 Security & Privacy
 
 - API credentials in environment variables only
-- No credential logging
+- Proper base64 Basic Auth encoding (no raw keys in headers)
+- No credential logging (debug prints removed in v2.1.0)
+- Input validation on all IDs and dates (path traversal prevention)
+- Client-side rate limiting (10 req/sec token bucket)
+- HTTP timeouts (30s request, 10s connect) and connection pool limits
+- Sanitized error responses (no internal details leaked to clients)
+- `.gitignore` protects secrets from accidental commits
 - Direct athlete-to-API communication
 - No third-party data sharing
 - User-controlled data access
@@ -261,7 +268,7 @@ async def make_request(
 | Read Operations | ✅ | ✅ |
 | Write Operations | ❌ | ✅ |
 | Update Operations | ❌ | ✅ |
-| Delete Operations | ❌ | ❌ | ✅ |
+| Delete Operations | ❌ | ✅ |
 | Bulk Operations | ❌ | ✅ |
 | CSV Export | ❌ | ✅ |
 | Workout Library | ❌ | ✅ (9 tools) |
@@ -287,7 +294,7 @@ async def make_request(
 3. ✅ Complete API reference (intervals.icu endpoint catalog)
 4. ✅ Changelog (version history)
 5. ✅ Extension summary (technical details)
-6. ✅ GitHub description (project summary)
+6. ✅ Example config (claude_desktop_config.example.json)
 
 ### Ready for Production
 - ✅ Code tested and validated
@@ -326,7 +333,7 @@ async def make_request(
 ✅ **Added full CRUD operations** (all major entities)
 ✅ **Included all requested APIs** from reference document
 ✅ **Comprehensive documentation** (7 files, 383-line quickstart)
-✅ **Production quality code** (1,016 lines, well-structured)
+✅ **Production quality code** (1,106 lines, well-structured)
 ✅ **User-friendly interface** (natural language via Claude)
 ✅ **Security best practices** (environment variables, no hardcoding)
 ✅ **Complete testing suite** (test_server.py)
@@ -353,9 +360,9 @@ This MCP server transforms Claude Desktop into a **complete intervals.icu traini
 ---
 
 **Project Status**: ✅ COMPLETE
-**Version**: 2.0.0
-**Date**: March 22, 2025
-**Lines of Code**: 1,016
+**Version**: 2.1.0
+**Date**: March 24, 2025
+**Lines of Code**: 1,106
 **API Tools**: 36
 **Documentation Pages**: 7
 **API Coverage**: ~95%

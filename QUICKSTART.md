@@ -375,7 +375,15 @@ type %LOCALAPPDATA%\Claude\Logs\mcp*.log
 
 ## Security Note
 
-Your API credentials are stored locally in the Claude Desktop config file. No data is sent to third parties - all requests go directly from your machine to intervals.icu.
+Your API credentials are stored locally in the Claude Desktop config file. No data is sent to third parties — all requests go directly from your machine to intervals.icu.
+
+**Built-in protections (v2.1.0):**
+- Proper HTTP Basic Auth encoding (base64) for secure API key transmission
+- All user-supplied IDs and dates are validated before use (prevents path traversal and injection)
+- Client-side rate limiting (10 req/sec) prevents accidental API abuse
+- HTTP timeouts (30s request, 10s connect) and connection pool limits prevent hung requests
+- Error messages are sanitized — internal paths and stack traces are never exposed
+- `.gitignore` prevents accidental commit of `.env` files and credential configs
 
 **Best practices:**
 - Never share your API key or config file

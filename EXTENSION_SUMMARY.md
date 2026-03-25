@@ -7,7 +7,7 @@ The intervals.icu MCP server has been comprehensively extended from a basic 8-to
 ## Statistics
 
 - **Total API Tools**: 36 (up from 8)
-- **Total Code Lines**: 1,016
+- **Total Code Lines**: 1,106
 - **API Coverage**: ~95% of public intervals.icu APIs
 - **Supported Operations**: Full CRUD (Create, Read, Update, Delete)
 
@@ -132,14 +132,19 @@ Supports:
 - Flexible response handling (JSON, CSV, binary)
 
 ### Authentication
-- Basic authentication with API key
+- Proper HTTP Basic Auth encoding (`base64(API_KEY:{key})`)
 - Athlete ID (0) for authenticated user
 - Secure environment variable storage
 
+### Input Validation
+- All date parameters validated against `YYYY-MM-DD` format with calendar date check
+- All IDs (activity, event, folder, workout, plan) validated against safe character pattern
+- Prevents path traversal and injection via URL interpolation
+
 ### Error Handling
-- Comprehensive try-catch blocks
-- Informative error messages
-- Graceful degradation
+- Typed exception handling: `ValueError`, `HTTPStatusError`, `TimeoutException`
+- Sanitized error messages — no internal paths or stack traces exposed to clients
+- Unexpected errors logged server-side via `logger.exception()`
 - HTTP status code handling
 
 ## Use Cases Enabled
@@ -259,7 +264,7 @@ User: "Rename yesterday's ride to 'Recovery Spin' and delete that duplicate"
 2. **QUICKSTART.md** - Fast setup and common use cases
 3. **API_REFERENCE.md** - Complete intervals.icu API documentation
 4. **CHANGELOG.md** - Version history and changes
-5. **server.py** - Fully implemented MCP server (1,016 lines)
+5. **server.py** - Fully implemented MCP server (1,106 lines)
 6. **test_server.py** - Test suite for validation
 7. **requirements.txt** - Python dependencies
 8. **pyproject.toml** - Package configuration
@@ -336,10 +341,16 @@ While this implementation covers ~95% of the public API, potential additions inc
 ## Security & Privacy
 
 - API credentials in environment variables
-- No credential logging
+- Proper base64 Basic Auth encoding (no raw keys in headers)
+- No credential logging (debug prints removed)
 - Direct athlete-to-API communication
 - No third-party data sharing
 - User-controlled data access
+- Input validation on all IDs and dates (path traversal prevention)
+- Client-side rate limiting (10 req/sec token bucket)
+- HTTP timeouts (30s request, 10s connect) and connection pool limits
+- Sanitized error responses (no internal details leaked)
+- `.gitignore` protects `.env` files and credential configs from accidental commits
 
 ## Conclusion
 

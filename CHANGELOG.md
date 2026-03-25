@@ -2,18 +2,31 @@
 
 All notable changes to the intervals.icu MCP Server.
 
-## [2.0.1] - 2026-03-23
+## [2.1.0] - 2025-03-24
 
-### 🔧 Critical Authentication Fix
+### Security Hardening
 
-Fixed authentication issues causing 403 Forbidden errors with intervals.icu API.
+Comprehensive security audit and fixes across the entire server.
 
 ### Fixed
 
-#### Authentication
-- **Critical**: Fixed Basic Authentication implementation to use proper base64 encoding
-  - Changed from `f"Basic {api_key}"` to proper `base64.b64encode(f"API_KEY:{api_key}".encode('ascii'))`
-  - Authentication now correctly follows intervals.icu API spec (username: "API_KEY", password: actual key
+- **Broken Basic Auth**: API key is now properly base64-encoded as `API_KEY:{key}` per HTTP Basic Auth spec
+- **Credential leakage**: Removed debug logging that printed athlete ID and partial API key to stderr on every startup
+
+### Added
+
+- **`.gitignore`**: Prevents accidental commit of `.env` files, `claude_desktop_config.json`, and other secrets
+- **Input validation**: All date parameters validated against `YYYY-MM-DD` format; all IDs validated against safe character pattern to prevent path traversal
+- **Rate limiting**: Token-bucket rate limiter (10 req/sec) on all outbound API requests
+- **HTTP client hardening**: 30s request timeout, 10s connect timeout, connection pool limits (20 max / 5 keepalive)
+- **Typed error handling**: `ValueError`, `HTTPStatusError`, and `TimeoutException` caught separately with sanitized messages; unexpected errors logged internally and return a generic message
+
+### Changed
+
+- Replaced global mutable `http_client` with private `_http_client` accessed via `_get_http_client()` for safer initialization
+- Error responses no longer leak internal paths, stack traces, or partial API response data
+
+---
 
 ## [2.0.0] - 2025-03-22
 
