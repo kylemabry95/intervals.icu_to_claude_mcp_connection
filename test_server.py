@@ -48,7 +48,7 @@ async def test_tools():
     # Initialize HTTP client
     import httpx
     async with httpx.AsyncClient() as client:
-        server.http_client = client
+        server._http_client = client
         
         print("\n" + "=" * 50)
         print("Testing Tools")

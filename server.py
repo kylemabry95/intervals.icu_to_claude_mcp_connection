@@ -10,21 +10,74 @@ workout library, training plans, and coaching features.
 import asyncio
 import base64
 import json
+import logging
 import os
+import re
+import time
 from datetime import datetime, timedelta
 from typing import Any, Optional, Literal
 from urllib.parse import quote
+
+logger = logging.getLogger(__name__)
 
 import httpx
 from mcp.server import Server
 from mcp.server.stdio import stdio_server
 from mcp.types import Tool, TextContent, ImageContent, EmbeddedResource
 
-# Initialize MCP server
 app = Server("intervals-icu")
 
-# Global HTTP client
-http_client: Optional[httpx.AsyncClient] = None
+_SAFE_ID_RE = re.compile(r"^[a-zA-Z0-9_\-:.]+$")
+_DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+
+_http_client: Optional[httpx.AsyncClient] = None
+
+
+def _get_http_client() -> httpx.AsyncClient:
+    if _http_client is None:
+        raise RuntimeError("HTTP client not initialized — server not started via main()")
+    return _http_client
+
+
+def validate_id(value: str, field_name: str = "id") -> str:
+    if not value or not _SAFE_ID_RE.match(value):
+        raise ValueError(f"Invalid {field_name}: must be alphanumeric, hyphens, underscores, dots, or colons")
+    return value
+
+
+def validate_date(value: str, field_name: str = "date") -> str:
+    if not _DATE_RE.match(value):
+        raise ValueError(f"Invalid {field_name}: expected YYYY-MM-DD format")
+    try:
+        datetime.strptime(value, "%Y-%m-%d")
+    except ValueError:
+        raise ValueError(f"Invalid {field_name}: not a real calendar date")
+    return value
+
+
+class _RateLimiter:
+    """Token-bucket rate limiter: max `rate` requests per `per` seconds."""
+
+    def __init__(self, rate: int = 10, per: float = 1.0) -> None:
+        self._rate = rate
+        self._per = per
+        self._tokens = float(rate)
+        self._last = time.monotonic()
+
+    async def acquire(self) -> None:
+        now = time.monotonic()
+        elapsed = now - self._last
+        self._last = now
+        self._tokens = min(self._rate, self._tokens + elapsed * (self._rate / self._per))
+        if self._tokens < 1:
+            wait = (1 - self._tokens) * (self._per / self._rate)
+            await asyncio.sleep(wait)
+            self._tokens = 0
+        else:
+            self._tokens -= 1
+
+
+_rate_limiter = _RateLimiter(rate=10, per=1.0)
 
 
 def get_credentials() -> tuple[str, str]:
@@ -70,24 +123,20 @@ async def make_request(
         athlete_base_url = f"{api_base_url}/athlete/{athlete_id}"
         url = f"{athlete_base_url}/{endpoint}" if endpoint else athlete_base_url
     
-    # Create proper Basic auth header
-    # Username is literally "API_KEY", password is the actual API key
-    auth_string = f"API_KEY:{api_key}"
-    auth_bytes = auth_string.encode('ascii')
-    auth_b64 = base64.b64encode(auth_bytes).decode('ascii')
-    
+    # Properly encode Basic Auth as base64(API_KEY:api_key)
+    credentials = base64.b64encode(f"API_KEY:{api_key}".encode()).decode()
     headers = {
-        "Authorization": f"Basic {auth_b64}",
+        "Authorization": f"Basic {credentials}",
         "Accept": "application/json"
     }
     
     if json_data:
         headers["Content-Type"] = "application/json"
     
-    if http_client is None:
-        raise RuntimeError("HTTP client not initialized")
+    client = _get_http_client()
+    await _rate_limiter.acquire()
     
-    response = await http_client.request(
+    response = await client.request(
         method=method,
         url=url,
         headers=headers,
@@ -631,6 +680,8 @@ async def call_tool(name: str, arguments: Any) -> list[TextContent]:
         elif name == "get_wellness_data":
             start_date = arguments.get("start_date") or (today - timedelta(days=30)).isoformat()
             end_date = arguments.get("end_date") or today.isoformat()
+            validate_date(start_date, "start_date")
+            validate_date(end_date, "end_date")
             
             data = await make_request("wellness", params={
                 "oldest": start_date,
@@ -642,6 +693,7 @@ async def call_tool(name: str, arguments: Any) -> list[TextContent]:
             date = arguments.get("date")
             if not date:
                 raise ValueError("date is required")
+            validate_date(date)
             
             data = await make_request(f"wellness/{date}")
             return [TextContent(type="text", text=json.dumps(data, indent=2))]
@@ -652,6 +704,7 @@ async def call_tool(name: str, arguments: Any) -> list[TextContent]:
             
             if not date or not wellness_data:
                 raise ValueError("date and data are required")
+            validate_date(date)
             
             data = await make_request(
                 f"wellness/{date}",
@@ -676,6 +729,8 @@ async def call_tool(name: str, arguments: Any) -> list[TextContent]:
         elif name == "get_activities":
             start_date = arguments.get("start_date") or (today - timedelta(days=30)).isoformat()
             end_date = arguments.get("end_date") or today.isoformat()
+            validate_date(start_date, "start_date")
+            validate_date(end_date, "end_date")
             
             data = await make_request("activities", params={
                 "oldest": start_date,
@@ -693,6 +748,7 @@ async def call_tool(name: str, arguments: Any) -> list[TextContent]:
             
             if not activity_id:
                 raise ValueError("activity_id is required")
+            validate_id(activity_id, "activity_id")
             
             params = {"intervals": "true"} if include_intervals else {}
             data = await make_request(
@@ -708,6 +764,7 @@ async def call_tool(name: str, arguments: Any) -> list[TextContent]:
             
             if not activity_id or not activity_data:
                 raise ValueError("activity_id and data are required")
+            validate_id(activity_id, "activity_id")
             
             data = await make_request(
                 f"activity/{activity_id}",
@@ -721,6 +778,7 @@ async def call_tool(name: str, arguments: Any) -> list[TextContent]:
             activity_id = arguments.get("activity_id")
             if not activity_id:
                 raise ValueError("activity_id is required")
+            validate_id(activity_id, "activity_id")
             
             data = await make_request(
                 f"activity/{activity_id}",
@@ -733,6 +791,8 @@ async def call_tool(name: str, arguments: Any) -> list[TextContent]:
         elif name == "get_fitness_trends":
             start_date = arguments.get("start_date") or (today - timedelta(days=90)).isoformat()
             end_date = arguments.get("end_date") or today.isoformat()
+            validate_date(start_date, "start_date")
+            validate_date(end_date, "end_date")
             
             data = await make_request("wellness", params={
                 "oldest": start_date,
@@ -762,12 +822,15 @@ async def call_tool(name: str, arguments: Any) -> list[TextContent]:
             start_date = arguments.get("start_date") or today.isoformat()
             end_date = arguments.get("end_date") or (today + timedelta(days=90)).isoformat()
             calendar_id = arguments.get("calendar_id")
+            validate_date(start_date, "start_date")
+            validate_date(end_date, "end_date")
             
             params = {
                 "oldest": start_date,
                 "newest": end_date
             }
             if calendar_id:
+                validate_id(calendar_id, "calendar_id")
                 params["calendar_id"] = calendar_id
             
             data = await make_request("events", params=params)
@@ -777,6 +840,7 @@ async def call_tool(name: str, arguments: Any) -> list[TextContent]:
             event_id = arguments.get("event_id")
             if not event_id:
                 raise ValueError("event_id is required")
+            validate_id(event_id, "event_id")
             
             data = await make_request(f"events/{event_id}")
             return [TextContent(type="text", text=json.dumps(data, indent=2))]
@@ -799,6 +863,7 @@ async def call_tool(name: str, arguments: Any) -> list[TextContent]:
             
             if not event_id or not event_data:
                 raise ValueError("event_id and event_data are required")
+            validate_id(event_id, "event_id")
             
             data = await make_request(
                 f"events/{event_id}",
@@ -811,6 +876,7 @@ async def call_tool(name: str, arguments: Any) -> list[TextContent]:
             event_id = arguments.get("event_id")
             if not event_id:
                 raise ValueError("event_id is required")
+            validate_id(event_id, "event_id")
             
             data = await make_request(
                 f"events/{event_id}",
@@ -821,6 +887,8 @@ async def call_tool(name: str, arguments: Any) -> list[TextContent]:
         elif name == "get_planned_workouts":
             start_date = arguments.get("start_date") or today.isoformat()
             end_date = arguments.get("end_date") or (today + timedelta(days=14)).isoformat()
+            validate_date(start_date, "start_date")
+            validate_date(end_date, "end_date")
             
             data = await make_request("events", params={
                 "oldest": start_date,
@@ -854,6 +922,7 @@ async def call_tool(name: str, arguments: Any) -> list[TextContent]:
             
             if not folder_id or not folder_data:
                 raise ValueError("folder_id and data are required")
+            validate_id(folder_id, "folder_id")
             
             data = await make_request(
                 f"folders/{folder_id}",
@@ -866,6 +935,7 @@ async def call_tool(name: str, arguments: Any) -> list[TextContent]:
             folder_id = arguments.get("folder_id")
             if not folder_id:
                 raise ValueError("folder_id is required")
+            validate_id(folder_id, "folder_id")
             
             data = await make_request(
                 f"folders/{folder_id}",
@@ -881,6 +951,7 @@ async def call_tool(name: str, arguments: Any) -> list[TextContent]:
             workout_id = arguments.get("workout_id")
             if not workout_id:
                 raise ValueError("workout_id is required")
+            validate_id(workout_id, "workout_id")
             
             data = await make_request(f"workouts/{workout_id}")
             return [TextContent(type="text", text=json.dumps(data, indent=2))]
@@ -903,6 +974,7 @@ async def call_tool(name: str, arguments: Any) -> list[TextContent]:
             
             if not workout_id or not workout_data:
                 raise ValueError("workout_id and workout_data are required")
+            validate_id(workout_id, "workout_id")
             
             data = await make_request(
                 f"workouts/{workout_id}",
@@ -915,6 +987,7 @@ async def call_tool(name: str, arguments: Any) -> list[TextContent]:
             workout_id = arguments.get("workout_id")
             if not workout_id:
                 raise ValueError("workout_id is required")
+            validate_id(workout_id, "workout_id")
             
             data = await make_request(
                 f"workouts/{workout_id}",
@@ -945,6 +1018,7 @@ async def call_tool(name: str, arguments: Any) -> list[TextContent]:
             
             if not plan_id or not plan_data:
                 raise ValueError("plan_id and plan_data are required")
+            validate_id(plan_id, "plan_id")
             
             data = await make_request(
                 f"plans/{plan_id}",
@@ -957,6 +1031,7 @@ async def call_tool(name: str, arguments: Any) -> list[TextContent]:
             plan_id = arguments.get("plan_id")
             if not plan_id:
                 raise ValueError("plan_id is required")
+            validate_id(plan_id, "plan_id")
             
             data = await make_request(
                 f"plans/{plan_id}",
@@ -977,8 +1052,9 @@ async def call_tool(name: str, arguments: Any) -> list[TextContent]:
         elif name == "get_power_curve":
             start_date = arguments.get("start_date") or (today - timedelta(days=90)).isoformat()
             end_date = arguments.get("end_date") or today.isoformat()
+            validate_date(start_date, "start_date")
+            validate_date(end_date, "end_date")
             
-            # Get activities to extract power curve data
             activities = await make_request("activities", params={
                 "oldest": start_date,
                 "newest": end_date
@@ -1000,53 +1076,27 @@ async def call_tool(name: str, arguments: Any) -> list[TextContent]:
         else:
             raise ValueError(f"Unknown tool: {name}")
     
-    except Exception as e:
-        return [TextContent(
-            type="text",
-            text=f"Error: {str(e)}"
-        )]
+    except ValueError as e:
+        return [TextContent(type="text", text=f"Validation error: {e}")]
+    except httpx.HTTPStatusError as e:
+        return [TextContent(type="text", text=f"API error: HTTP {e.response.status_code}")]
+    except httpx.TimeoutException:
+        return [TextContent(type="text", text="API error: request timed out")]
+    except Exception:
+        logger.exception("Unexpected error in call_tool")
+        return [TextContent(type="text", text="Internal server error")]
 
 
 async def main():
-    """Run the MCP server."""
-    global http_client
+    global _http_client
+
+    logger.info("Server starting")
     
-    # Print debugging information on startup
-    import sys
-    print("=" * 60, file=sys.stderr)
-    print("INTERVALS.ICU MCP SERVER - STARTUP DEBUG INFO", file=sys.stderr)
-    print("=" * 60, file=sys.stderr)
-    
-    # Check environment variables
-    api_key = os.getenv("INTERVALS_API_KEY")
-    athlete_id = os.getenv("INTERVALS_ATHLETE_ID")
-    base_url = os.getenv("INTERVALS_API_BASE_URL", "https://intervals.icu/api/v1")
-    
-    print(f"API Key Present: {'✓ YES' if api_key else '✗ NO'}", file=sys.stderr)
-    if api_key:
-        print(f"API Key (first 8 chars): {api_key[:8]}...", file=sys.stderr)
-    
-    print(f"Athlete ID: {athlete_id if athlete_id else '✗ NOT SET'}", file=sys.stderr)
-    print(f"Base URL: {base_url}", file=sys.stderr)
-    
-    # Test basic auth encoding
-    if api_key:
-        auth_string = f"API_KEY:{api_key}"
-        auth_bytes = auth_string.encode('ascii')
-        auth_b64 = base64.b64encode(auth_bytes).decode('ascii')
-        print(f"Auth Header (first 20 chars): Basic {auth_b64[:20]}...", file=sys.stderr)
-    
-    # Test URL construction
-    if athlete_id:
-        test_url = f"{base_url}/athlete/{athlete_id}"
-        print(f"Test Athlete URL: {test_url}", file=sys.stderr)
-    
-    print("=" * 60, file=sys.stderr)
-    print("Starting MCP server...", file=sys.stderr)
-    print("=" * 60, file=sys.stderr)
-    
-    async with httpx.AsyncClient() as client:
-        http_client = client
+    async with httpx.AsyncClient(
+        timeout=httpx.Timeout(30.0, connect=10.0),
+        limits=httpx.Limits(max_connections=20, max_keepalive_connections=5),
+    ) as client:
+        _http_client = client
         async with stdio_server() as (read_stream, write_stream):
             await app.run(
                 read_stream,
