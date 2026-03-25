@@ -13,11 +13,13 @@ import json
 import logging
 import os
 import re
+import sys
 import time
 from datetime import datetime, timedelta
 from typing import Any, Optional, Literal
 from urllib.parse import quote
 
+logging.basicConfig(level=logging.INFO, stream=sys.stderr, format="%(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
 
 import httpx
