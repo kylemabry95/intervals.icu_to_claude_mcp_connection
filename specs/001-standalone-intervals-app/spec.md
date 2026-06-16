@@ -14,6 +14,9 @@
 
 - Q: Update Mechanism & Frequency → A: Scheduled checks with user prompts (daily by default; user can defer)
 
+- Q2: Operating System Support → A: macOS and Windows (initial v1 targets)
+- Q3: Minimum OS Versions → A: macOS 11 (Big Sur) and Windows 10 21H2
+
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -145,8 +148,8 @@ Users may encounter unfamiliar workflows or need guidance on how to interact wit
 - **SC-005**: Application uptime is 99.5% for authenticated users (excluding scheduled maintenance)
 - **SC-006**: Users report satisfaction with the natural language interface; 80% of surveyed users find it intuitive
 - **SC-007**: Application supports at least macOS and Windows (minimum OS versions [NEEDS CLARIFICATION: which versions?])
- - **SC-007**: Application supports at least macOS and Windows (v1 targets). Minimum versions to be confirmed in clarifications.
-- **SC-008**: The MCP server and application together handle 10k+ training records without performance degradation
+ - **SC-007**: Application supports macOS 11 (Big Sur) and Windows 10 21H2 (v1 minimums).
+ - **SC-008**: The MCP server and application together handle 10k+ training records without performance degradation
 
 ## Assumptions
 
