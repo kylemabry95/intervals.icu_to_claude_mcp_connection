@@ -13,7 +13,7 @@
 
 ## Requirement Completeness
 
- - [ ] No [NEEDS CLARIFICATION] markers remain - **2 clarifications pending**
+ - [ ] No [NEEDS CLARIFICATION] markers remain - **1 clarification pending**
 - [x] Requirements are testable and unambiguous
 - [x] Success criteria are measurable
 - [x] Success criteria are technology-agnostic (no implementation details)
@@ -69,6 +69,7 @@
 | E | Custom versions | Specify your own OS targets and versions |
 
 **Your choice**: 
+**Your choice**: A (macOS and Windows)
 
 ---
 

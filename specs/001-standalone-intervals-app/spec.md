@@ -125,6 +125,7 @@ Users may encounter unfamiliar workflows or need guidance on how to interact wit
 - **FR-011**: Application MUST log errors and events for troubleshooting (accessible via settings panel)
 - **FR-012**: Application MUST support automatic updates to incorporate new features and security fixes. Update strategy: Scheduled checks with user prompts (daily by default); users can defer updates. Update mechanism: app checks for updates daily and notifies the user with an option to install now or defer.
 - **FR-013**: Application MUST work on [NEEDS CLARIFICATION: specific operating systems - macOS and Windows minimum, or include Linux?]
+ - **FR-013**: Application MUST work on macOS and Windows (initial v1 targets). Linux support may be considered in later releases.
 
 ### Key Entities
 
@@ -144,6 +145,7 @@ Users may encounter unfamiliar workflows or need guidance on how to interact wit
 - **SC-005**: Application uptime is 99.5% for authenticated users (excluding scheduled maintenance)
 - **SC-006**: Users report satisfaction with the natural language interface; 80% of surveyed users find it intuitive
 - **SC-007**: Application supports at least macOS and Windows (minimum OS versions [NEEDS CLARIFICATION: which versions?])
+ - **SC-007**: Application supports at least macOS and Windows (v1 targets). Minimum versions to be confirmed in clarifications.
 - **SC-008**: The MCP server and application together handle 10k+ training records without performance degradation
 
 ## Assumptions
