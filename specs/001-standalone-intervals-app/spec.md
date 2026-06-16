@@ -8,6 +8,13 @@
 
 **Input**: User description: "I want to build an application that runs this mcp server with Claude as a standalone application for users to interact with intervals.icu on their local machine."
 
+## Clarifications
+
+### Session 2026-06-16
+
+- Q: Update Mechanism & Frequency → A: Scheduled checks with user prompts (daily by default; user can defer)
+
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Install and Launch Application (Priority: P1)
@@ -116,7 +123,7 @@ Users may encounter unfamiliar workflows or need guidance on how to interact wit
 - **FR-009**: Application MUST handle network errors (timeouts, disconnections) gracefully without crashing
 - **FR-010**: Application MUST provide clear, actionable error messages to users when failures occur
 - **FR-011**: Application MUST log errors and events for troubleshooting (accessible via settings panel)
-- **FR-012**: Application MUST support automatic updates to incorporate new features and security fixes [NEEDS CLARIFICATION: update frequency and delivery mechanism - automatic silent updates, manual checks, or scheduled checks?]
+- **FR-012**: Application MUST support automatic updates to incorporate new features and security fixes. Update strategy: Scheduled checks with user prompts (daily by default); users can defer updates. Update mechanism: app checks for updates daily and notifies the user with an option to install now or defer.
 - **FR-013**: Application MUST work on [NEEDS CLARIFICATION: specific operating systems - macOS and Windows minimum, or include Linux?]
 
 ### Key Entities
