@@ -18,7 +18,7 @@ Deliver a user-friendly desktop application that bundles the existing MCP server
 
 **Target Platform**: Desktop (macOS 11+, Windows 10 21H2+)
 
-**Project Type**: Local service + desktop UI wrapper (Electron/Neutral UI or native packaging)
+**Project Type**: Python desktop application wrapper (`desktop_app/`) with local MCP runtime integration and platform-specific packaging scripts
 
 **Performance Goals**: p95 query latency < 5s; handle 10k+ training records without degradation
 
@@ -50,8 +50,8 @@ See repository root. Feature docs will live under `specs/001-standalone-interval
 Outputs: `data-model.md`, `contracts/`, `quickstart.md` (created alongside this plan)
 
 Key design tasks:
-- Define packaging approach (Electron vs native bundlers) — tradeoffs: app size, native integration, auto-update support
-- Define UI architecture (minimal web UI served locally vs native window) — minimal web UI recommended for rapid MVP
+- Define Python-native packaging workflow for macOS and Windows installers
+- Define desktop UI architecture in `desktop_app/ui/` for auth, chat, settings, and help screens
 - Define IPC between UI and MCP server (use local stdio proxy or WebSocket adapter)
 - Define secure credential storage and retrieval path per OS
 - Define update-check service and UX (daily scheduled checks, user deferral)
