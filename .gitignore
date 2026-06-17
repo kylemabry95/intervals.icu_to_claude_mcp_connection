@@ -8,9 +8,12 @@ __pycache__/
 *.py[cod]
 *$py.class
 *.egg-info/
-dist/
-build/
+/dist/
+/build/
 *.egg
+!/dist/macos/
+!/dist/macos/*.dmg
+!/dist/macos/BUILD_MANIFEST.md
 
 # Virtual environments
 .venv/
