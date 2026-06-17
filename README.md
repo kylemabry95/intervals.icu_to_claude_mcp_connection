@@ -23,11 +23,53 @@ A self-contained, production-ready desktop application for macOS and Windows. **
 - 📦 [IntervalsICU-1.0.0.dmg](dist/macos/IntervalsICU-1.0.0.dmg) (33 MB) — Ready for installation
 - 📋 [Build Details](dist/macos/BUILD_MANIFEST.md) — Build information and requirements
 
-**Installation**:
+#### 🚀 Seamless One-Click Installation
 
-1. Download and mount the DMG file
+The DMG includes an automated **`install.sh`** script that handles everything automatically:
+
+```bash
+# 1. Mount the DMG (or double-click in Finder)
+hdiutil attach IntervalsICU-1.0.0.dmg
+
+# 2. Run the install script from the mounted volume
+/Volumes/IntervalsICU/install.sh
+# Or simply double-click install.sh in Finder
+```
+
+The script automatically:
+
+- ✅ Detects and validates the app bundle
+- ✅ Copies to `/Applications` folder
+- ✅ Removes Gatekeeper quarantine attribute (eliminates "can't scan for malware" warnings)
+- ✅ Verifies installation completeness
+- ✅ Provides helpful error messages if issues occur
+
+**Installation options**:
+
+```bash
+# Standard installation to /Applications
+./install.sh
+
+# Custom destination folder
+./install.sh --dest ~/Desktop/Apps
+
+# Force replacement if app already exists
+./install.sh --force
+
+# Verbose output for troubleshooting
+./install.sh --verbose
+
+# Show help
+./install.sh --help
+```
+
+#### ⚙️ Manual Installation (Alternative)
+
+If you prefer to install manually:
+
+1. Mount the DMG file (double-click)
 2. Drag `IntervalsICU.app` to your Applications folder
-3. Launch from Applications or Spotlight search
+3. Resolve Gatekeeper warnings (see troubleshooting below)
 
 **Troubleshooting – "Can't be scanned for malware" Error**:
 
@@ -40,11 +82,11 @@ If you see a macOS warning that the app "can't be opened because it can't be sca
 xattr -d com.apple.quarantine /Applications/IntervalsICU.app
 ```
 
-**Option 2 — Using the Fix Script:**
+**Option 2 — Using the Fix Script (from DMG):**
 
 ```bash
-# From the DMG, run the provided fix script
-./fix-gatekeeper.sh /Applications/IntervalsICU.app
+# From the mounted DMG, run the provided fix script
+/Volumes/IntervalsICU/fix-gatekeeper.sh /Applications/IntervalsICU.app
 ```
 
 **Option 3 — Manual Trust:**
@@ -85,14 +127,39 @@ python -m desktop_app.main
 
 **macOS** — ✅ Build Complete
 
+The macOS distribution includes a seamless one-click installation experience:
+
+**Distribution Artifacts:**
+
 - Distributable `.dmg` available: [IntervalsICU-1.0.0.dmg](dist/macos/IntervalsICU-1.0.0.dmg)
+- Includes `install.sh` — Automated installation script (handles Gatekeeper quarantine removal)
+- Includes `fix-gatekeeper.sh` — Manual Gatekeeper resolution tool
 - Build branch: [`build/macos-dmg-v1.0.0`](https://github.com/kylemabry95/intervals.icu_to_claude_mcp_connection/tree/build/macos-dmg-v1.0.0)
-- To rebuild locally:
-  ```bash
-  chmod +x packaging/macos/build.sh
-  ./packaging/macos/build.sh --version 1.0.0
-  # Add --sign --notarize for production builds (requires Developer ID)
-  ```
+
+**Build Toolchain:**
+
+- PyInstaller 6.11.0+ — Bundles Python app to `.app` format
+- create-dmg 1.3.3 — Creates professional DMG distribution
+- Code signing with ad-hoc signatures + xattr Gatekeeper bypass
+
+**To rebuild locally:**
+
+```bash
+chmod +x packaging/macos/build.sh
+./packaging/macos/build.sh --version 1.0.0
+# Add --sign --notarize for production builds (requires Developer ID)
+```
+
+**Build Output:**
+
+- `dist/macos/IntervalsICU-1.0.0.dmg` (~32 MB, 64.7% compression)
+- Contains: IntervalsICU.app, install.sh, fix-gatekeeper.sh, Applications symlink
+
+**Installation Scripts:**
+
+- [packaging/macos/install.sh](packaging/macos/install.sh) — Main automated installer (520 lines, 16 functions)
+- [packaging/macos/fix-gatekeeper.sh](packaging/macos/fix-gatekeeper.sh) — Standalone Gatekeeper resolver
+- [packaging/macos/README.md](packaging/macos/README.md) — Build documentation and workflow
 
 **Windows** — In Development
 
