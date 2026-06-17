@@ -138,8 +138,10 @@ else
     echo "    xattr -d com.apple.quarantine /Applications/IntervalsICU.app"
 fi
 
-# ── Add Gatekeeper helper script to DMG ──────────────────────────────────────
-echo "Adding Gatekeeper helper script to DMG..."
+# ── Add installation and helper scripts to DMG ───────────────────────────────
+echo "Adding installation scripts to DMG..."
+cp "packaging/macos/install.sh" "${DIST_DIR}/" || true
+chmod +x "${DIST_DIR}/install.sh" 2>/dev/null || true
 cp "packaging/macos/fix-gatekeeper.sh" "${DIST_DIR}/" || true
 chmod +x "${DIST_DIR}/fix-gatekeeper.sh" 2>/dev/null || true
 
