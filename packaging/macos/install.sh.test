@@ -26,7 +26,7 @@ readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly TEST_DIR="${SCRIPT_DIR}/.test"
 readonly MOCK_APP_NAME="IntervalsICU"
 readonly MOCK_APP_BUNDLE="${MOCK_APP_NAME}.app"
-readonly MOCK_DMG_MOUNT="/Volumes/${MOCK_APP_NAME}"
+readonly MOCK_DMG_MOUNT="${TEST_DIR}/mock_mount"
 readonly TEST_DEST="${TEST_DIR}/Applications"
 
 # Colors for output
@@ -111,11 +111,6 @@ EOF
 # Clean up test environment
 cleanup_test_env() {
     echo_test "Cleaning up test environment..."
-    
-    # Unmount mock DMG if mounted
-    if mount | grep -q "${MOCK_DMG_MOUNT}"; then
-        hdiutil detach "${MOCK_DMG_MOUNT}" 2>/dev/null || true
-    fi
     
     # Remove test directory
     rm -rf "${TEST_DIR}"
