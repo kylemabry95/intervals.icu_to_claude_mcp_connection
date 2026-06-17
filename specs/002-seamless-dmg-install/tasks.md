@@ -147,15 +147,16 @@
 
 **Duration**: ~1.5 hours
 
-- [ ] T044 [P] Update `packaging/macos/build.sh` to copy install.sh into dist directory before DMG creation
-- [ ] T045 [P] Ensure install.sh has executable permissions after copy (chmod +x in build.sh)
-- [ ] T046 Verify Applications symlink is created in DMG (should already exist, but confirm in build.sh)
-- [ ] T047 Verify fix-gatekeeper.sh is included in DMG (should already exist from prior work)
-- [ ] T048 Test local DMG build: `./packaging/macos/build.sh --version 1.0.0`
-- [ ] T049 Mount test DMG and verify contents: `ls -la /Volumes/IntervalsICU/` shows all expected files
-- [ ] T050 Verify install.sh permissions preserved in mounted DMG: `stat /Volumes/IntervalsICU/install.sh`
+- [x] T044 [P] Update `packaging/macos/build.sh` to copy install.sh into dist directory before DMG creation
+- [x] T045 [P] Ensure install.sh has executable permissions after copy (chmod +x in build.sh)
+- [x] T046 Verify Applications symlink is created in DMG (should already exist, but confirm in build.sh)
+- [x] T047 Verify fix-gatekeeper.sh is included in DMG (should already exist from prior work)
+- [x] T048 Test local DMG build: `./packaging/macos/build.sh --version 1.0.0`
+- [x] T049 Mount test DMG and verify contents: `ls -la /Volumes/IntervalsICU/` shows all expected files
+- [x] T050 Verify install.sh permissions preserved in mounted DMG: `stat /Volumes/IntervalsICU/install.sh`
 
-**Checkpoint**: DMG build includes install.sh; all files have correct permissions
+**✅ PHASE 7 COMPLETE** — Commit: 67839c8
+**Status**: DMG successfully built with install.sh (17KB) and fix-gatekeeper.sh (1.2KB) included. Verified mounted DMG contains all required files with correct permissions. Build time: ~15 seconds.
 
 ---
 
