@@ -4,9 +4,71 @@
 
 This MCP server requires **proper Basic Authentication** for the Intervals.icu API.
 
+---
+
+## Standalone Desktop Application
+
+The standalone desktop app bundles the MCP server with a Claude-powered chat UI.
+
+### Quick start (development)
+
+```bash
+# 1. Install dependencies
+pip install -r requirements.txt
+
+# 2. Set up credentials
+cp .env.example .env
+# Edit .env and fill in:
+#   INTERVALS_API_KEY    — from intervals.icu → Settings → API
+#   INTERVALS_ATHLETE_ID — your athlete ID (e.g. i12345)
+#   ANTHROPIC_API_KEY    — from https://console.anthropic.com
+
+# 3. Launch
+python -m desktop_app.main
+```
+
+### Run tests
+
+```bash
+# Fast unit + integration tests
+pytest tests/unit tests/integration -v
+
+# All tests excluding live e2e
+pytest tests/ -v -m "not e2e"
+```
+
+### Build distributable packages
+
+**macOS:**
+
+```bash
+./packaging/macos/build.sh --version 1.0.0
+# Output: dist/macos/IntervalsICU-1.0.0.dmg
+```
+
+**Windows (PowerShell):**
+
+```powershell
+.\packaging\windows\build.ps1 -Version "1.0.0"
+# Output: dist\windows\IntervalsICU-1.0.0-Setup.exe
+```
+
+### Troubleshooting the desktop app
+
+| Problem                                  | Likely cause              | Fix                                                                             |
+| ---------------------------------------- | ------------------------- | ------------------------------------------------------------------------------- |
+| "Missing required environment variable"  | `.env` not configured     | Copy `.env.example` to `.env` and fill in credentials                           |
+| Auth fails with 401/403                  | Invalid API key           | Regenerate at intervals.icu → Settings → API                                    |
+| "The background service could not start" | `server.py` not found     | Run from the project root directory                                             |
+| Claude not responding                    | Missing Anthropic API key | Add `ANTHROPIC_API_KEY` to `.env`                                               |
+| App logs location                        | n/a                       | macOS: `~/Library/Logs/IntervalsICU/` · Windows: `%APPDATA%\IntervalsICU\Logs\` |
+
+---
+
 ### Authentication Format
 
 The Intervals.icu API uses Basic Authentication with a specific format:
+
 - **Username:** Literally the string `"API_KEY"` (not your actual username)
 - **Password:** Your actual API key from Intervals.icu settings
 - **Encoding:** Base64-encoded as `"API_KEY:your_api_key_here"`
@@ -60,6 +122,7 @@ Test Athlete URL: https://intervals.icu/api/v1/athlete/i230309
 ```
 
 Check these logs if the connection fails:
+
 - **macOS:** `~/Library/Logs/Claude/`
 - **Windows:** `%APPDATA%\Claude\logs\`
 
@@ -91,6 +154,7 @@ If this returns `{"status":403,"error":"Access denied"}`, your API key is invali
 ### Athlete ID
 
 Your athlete ID is visible in the URL when logged in:
+
 ```
 https://intervals.icu/athlete/i230309/calendar
                               ^^^^^^^^
@@ -127,6 +191,7 @@ https://intervals.icu/athlete/i230309/calendar
 ## Support
 
 If you're still having issues:
+
 1. Check the debug output in Claude Desktop logs
 2. Test your API key with curl
 3. Open a GitHub issue with the debug output (redact your API key!)

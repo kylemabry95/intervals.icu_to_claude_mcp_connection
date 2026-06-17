@@ -1,0 +1,57 @@
+[
+  {
+    "id": "q001",
+    "question": "What was my average FTP last month?",
+    "expected_grounding": ["get_athlete_profile", "get_wellness_data", "get_activities"],
+    "expected_keywords": ["FTP", "watts", "power"],
+    "rubric": {
+      "factual_correctness": "Response must reference structured data from the tool outputs, not fabricate values.",
+      "grounding": "Response must cite at least one interval.icu tool result.",
+      "completeness": "Response must answer the question asked without deflecting."
+    }
+  },
+  {
+    "id": "q002",
+    "question": "How many training hours did I log in the past 30 days?",
+    "expected_grounding": ["get_activities"],
+    "expected_keywords": ["hours", "minutes", "training"],
+    "rubric": {
+      "factual_correctness": "Must sum or estimate from actual activity records, not guess.",
+      "grounding": "Must use get_activities tool output.",
+      "completeness": "Must provide a specific number or range."
+    }
+  },
+  {
+    "id": "q003",
+    "question": "What were my sleep scores like this week?",
+    "expected_grounding": ["get_wellness_data"],
+    "expected_keywords": ["sleep", "hours", "quality", "score"],
+    "rubric": {
+      "factual_correctness": "Must reference wellness data for the specific week requested.",
+      "grounding": "Must cite get_wellness_data output.",
+      "completeness": "Must address the week range, not a generic answer."
+    }
+  },
+  {
+    "id": "q004",
+    "question": "What is my training load trend over the past two weeks?",
+    "expected_grounding": ["get_activities", "get_wellness_data"],
+    "expected_keywords": ["CTL", "ATL", "TSB", "load", "trend"],
+    "rubric": {
+      "factual_correctness": "Must derive trends from actual data, not assumptions.",
+      "grounding": "Must use at least one relevant tool output.",
+      "completeness": "Must describe direction of trend (increasing, decreasing, stable)."
+    }
+  },
+  {
+    "id": "q005",
+    "question": "What was my longest ride this year?",
+    "expected_grounding": ["get_activities"],
+    "expected_keywords": ["km", "miles", "distance", "ride", "hours"],
+    "rubric": {
+      "factual_correctness": "Must identify the specific longest ride from data.",
+      "grounding": "Must reference activity records.",
+      "completeness": "Must include distance and/or duration."
+    }
+  }
+]

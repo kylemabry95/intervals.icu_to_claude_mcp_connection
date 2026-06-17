@@ -18,12 +18,12 @@
 
 **Purpose**: Initialize desktop-app workspace and build tooling for packaging and validation.
 
-- [ ] T001 Create desktop app module scaffold in `desktop_app/__init__.py`, `desktop_app/main.py`, `desktop_app/ui/__init__.py`
-- [ ] T002 Create desktop packaging config stubs in `packaging/macos/build.sh`, `packaging/windows/build.ps1`
-- [ ] T003 [P] Add desktop runtime and testing dependencies to `requirements.txt`
-- [ ] T004 [P] Add test package scaffolding in `tests/unit/test_desktop_config.py`, `tests/integration/test_desktop_startup.py`, `tests/e2e/test_local_conversation_flow.py`
-- [ ] T005 [P] Add environment template for standalone app in `.env.example`
-- [ ] T006 Document local run and build entrypoints in `README.md`
+- [x] T001 Create desktop app module scaffold in `desktop_app/__init__.py`, `desktop_app/main.py`, `desktop_app/ui/__init__.py`
+- [x] T002 Create desktop packaging config stubs in `packaging/macos/build.sh`, `packaging/windows/build.ps1`
+- [x] T003 [P] Add desktop runtime and testing dependencies to `requirements.txt`
+- [x] T004 [P] Add test package scaffolding in `tests/unit/test_desktop_config.py`, `tests/integration/test_desktop_startup.py`, `tests/e2e/test_local_conversation_flow.py`
+- [x] T005 [P] Add environment template for standalone app in `.env.example`
+- [x] T006 Document local run and build entrypoints in `README.md`
 
 ---
 
@@ -33,13 +33,13 @@
 
 **CRITICAL**: No user story work starts until this phase is complete.
 
-- [ ] T007 Implement desktop app configuration loader and validation in `desktop_app/config.py`
-- [ ] T008 [P] Implement secure credential abstraction (Keychain/Credential Manager adapters) in `desktop_app/security/credentials.py`
-- [ ] T009 [P] Implement MCP server process manager (start/stop/health/state) in `desktop_app/runtime/mcp_process.py`
-- [ ] T010 Implement Claude Desktop bridge client and connection-state polling in `desktop_app/runtime/claude_bridge.py`
-- [ ] T011 [P] Implement shared structured logging and log file rotation in `desktop_app/observability/logging.py`
-- [ ] T012 Implement shared error model and user-safe error mapping in `desktop_app/errors.py`
-- [ ] T013 Create foundational integration tests for config, process lifecycle, and secure storage in `tests/integration/test_foundation_runtime.py`
+- [x] T007 Implement desktop app configuration loader and validation in `desktop_app/config.py`
+- [x] T008 [P] Implement secure credential abstraction (Keychain/Credential Manager adapters) in `desktop_app/security/credentials.py`
+- [x] T009 [P] Implement MCP server process manager (start/stop/health/state) in `desktop_app/runtime/mcp_process.py`
+- [x] T010 Implement Claude Desktop bridge client and connection-state polling in `desktop_app/runtime/claude_bridge.py`
+- [x] T011 [P] Implement shared structured logging and log file rotation in `desktop_app/observability/logging.py`
+- [x] T012 Implement shared error model and user-safe error mapping in `desktop_app/errors.py`
+- [x] T013 Create foundational integration tests for config, process lifecycle, and secure storage in `tests/integration/test_foundation_runtime.py`
 
 **Checkpoint**: Foundation complete - user stories can proceed.
 
@@ -53,17 +53,17 @@
 
 ### Tests for User Story 1
 
-- [ ] T014 [P] [US1] Add installer smoke test for macOS package in `tests/e2e/test_install_macos.py`
-- [ ] T015 [P] [US1] Add installer smoke test for Windows package in `tests/e2e/test_install_windows.py`
-- [ ] T016 [US1] Add launch and graceful shutdown integration test in `tests/integration/test_launch_shutdown.py`
+- [x] T014 [P] [US1] Add installer smoke test for macOS package in `tests/e2e/test_install_macos.py`
+- [x] T015 [P] [US1] Add installer smoke test for Windows package in `tests/e2e/test_install_windows.py`
+- [x] T016 [US1] Add launch and graceful shutdown integration test in `tests/integration/test_launch_shutdown.py`
 
 ### Implementation for User Story 1
 
-- [ ] T017 [P] [US1] Implement app bootstrap and single-instance guard in `desktop_app/main.py`
-- [ ] T018 [P] [US1] Implement startup window shell and initial route in `desktop_app/ui/shell.py`
-- [ ] T019 [US1] Implement startup orchestration for runtime checks in `desktop_app/runtime/startup.py`
-- [ ] T020 [US1] Implement macOS packaging script for app bundle and DMG in `packaging/macos/build.sh`
-- [ ] T021 [US1] Implement Windows packaging script for signed installer flow in `packaging/windows/build.ps1`
+- [x] T017 [P] [US1] Implement app bootstrap and single-instance guard in `desktop_app/main.py`
+- [x] T018 [P] [US1] Implement startup window shell and initial route in `desktop_app/ui/shell.py`
+- [x] T019 [US1] Implement startup orchestration for runtime checks in `desktop_app/runtime/startup.py`
+- [x] T020 [US1] Implement macOS packaging script for app bundle and DMG in `packaging/macos/build.sh`
+- [x] T021 [US1] Implement Windows packaging script for signed installer flow in `packaging/windows/build.ps1`
 
 **Checkpoint**: US1 independently installable and launchable.
 
@@ -77,16 +77,16 @@
 
 ### Tests for User Story 2
 
-- [ ] T022 [P] [US2] Add API-key validation unit tests in `tests/unit/test_auth_validation.py`
-- [ ] T023 [P] [US2] Add credential persistence integration test in `tests/integration/test_auth_persistence.py`
-- [ ] T024 [US2] Add logout-clears-credentials integration test in `tests/integration/test_auth_logout.py`
+- [x] T022 [P] [US2] Add API-key validation unit tests in `tests/unit/test_auth_validation.py`
+- [x] T023 [P] [US2] Add credential persistence integration test in `tests/integration/test_auth_persistence.py`
+- [x] T024 [US2] Add logout-clears-credentials integration test in `tests/integration/test_auth_logout.py`
 
 ### Implementation for User Story 2
 
-- [ ] T025 [P] [US2] Implement authentication service and key verification flow in `desktop_app/auth/service.py`
-- [ ] T026 [P] [US2] Implement login/logout controller and auth session state in `desktop_app/auth/session.py`
-- [ ] T027 [US2] Implement auth screen and user guidance text in `desktop_app/ui/auth_view.py`
-- [ ] T028 [US2] Implement auth error messaging and remediation hints in `desktop_app/ui/components/auth_errors.py`
+- [x] T025 [P] [US2] Implement authentication service and key verification flow in `desktop_app/auth/service.py`
+- [x] T026 [P] [US2] Implement login/logout controller and auth session state in `desktop_app/auth/session.py`
+- [x] T027 [US2] Implement auth screen and user guidance text in `desktop_app/ui/auth_view.py`
+- [x] T028 [US2] Implement auth error messaging and remediation hints in `desktop_app/ui/components/auth_errors.py`
 
 **Checkpoint**: US2 independently usable with secure login lifecycle.
 
@@ -100,21 +100,21 @@
 
 ### Tests for User Story 3
 
-- [ ] T029 [P] [US3] Add contract tests for MCP tool-to-endpoint mapping in `tests/contract/test_mcp_contracts.py`
-- [ ] T030 [P] [US3] Add integration test for primary query flow in `tests/integration/test_conversation_queries.py`
-- [ ] T031 [US3] Add follow-up context continuity test in `tests/integration/test_conversation_context.py`
-- [ ] T055 [US3] Add endpoint coverage matrix test for all supported intervals.icu tool endpoints in `tests/contract/test_endpoint_coverage_matrix.py`
-- [ ] T056 [US3] Add high-volume query performance test for 10k+ record workloads in `tests/performance/test_query_scale_10k.py`
-- [ ] T061 [US3] Create SC-004 acceptance evaluation dataset and expected answer annotations in `tests/evaluation/sc004_dataset.json`
-- [ ] T062 [US3] Implement SC-004 rubric scorer and pass/fail CI check (95% threshold) in `tests/evaluation/test_sc004_response_quality.py`
+- [x] T029 [P] [US3] Add contract tests for MCP tool-to-endpoint mapping in `tests/contract/test_mcp_contracts.py`
+- [x] T030 [P] [US3] Add integration test for primary query flow in `tests/integration/test_conversation_queries.py`
+- [x] T031 [US3] Add follow-up context continuity test in `tests/integration/test_conversation_context.py`
+- [x] T055 [US3] Add endpoint coverage matrix test for all supported intervals.icu tool endpoints in `tests/contract/test_endpoint_coverage_matrix.py`
+- [x] T056 [US3] Add high-volume query performance test for 10k+ record workloads in `tests/performance/test_query_scale_10k.py`
+- [x] T061 [US3] Create SC-004 acceptance evaluation dataset and expected answer annotations in `tests/evaluation/sc004_dataset.json`
+- [x] T062 [US3] Implement SC-004 rubric scorer and pass/fail CI check (95% threshold) in `tests/evaluation/test_sc004_response_quality.py`
 
 ### Implementation for User Story 3
 
-- [ ] T032 [P] [US3] Implement conversation domain model and context summarization in `desktop_app/conversation/model.py`
-- [ ] T033 [P] [US3] Implement conversation orchestration service (Claude + MCP calls) in `desktop_app/conversation/service.py`
-- [ ] T034 [US3] Implement chat UI, streaming states, and message history in `desktop_app/ui/chat_view.py`
-- [ ] T035 [US3] Implement unavailable-data fallback handling in `desktop_app/conversation/fallbacks.py`
-- [ ] T036 [US3] Add performance telemetry for query latency SLIs in `desktop_app/observability/metrics.py`
+- [x] T032 [P] [US3] Implement conversation domain model and context summarization in `desktop_app/conversation/model.py`
+- [x] T033 [P] [US3] Implement conversation orchestration service (Claude + MCP calls) in `desktop_app/conversation/service.py`
+- [x] T034 [US3] Implement chat UI, streaming states, and message history in `desktop_app/ui/chat_view.py`
+- [x] T035 [US3] Implement unavailable-data fallback handling in `desktop_app/conversation/fallbacks.py`
+- [x] T036 [US3] Add performance telemetry for query latency SLIs in `desktop_app/observability/metrics.py`
 
 **Checkpoint**: US3 independently delivers the core conversational value.
 
@@ -128,18 +128,18 @@
 
 ### Tests for User Story 4
 
-- [ ] T037 [P] [US4] Add settings persistence unit tests in `tests/unit/test_settings_store.py`
-- [ ] T038 [P] [US4] Add integration test for API key update and re-auth in `tests/integration/test_settings_reauth.py`
-- [ ] T039 [US4] Add integration test for log viewer rendering in `tests/integration/test_settings_logs.py`
+- [x] T037 [P] [US4] Add settings persistence unit tests in `tests/unit/test_settings_store.py`
+- [x] T038 [P] [US4] Add integration test for API key update and re-auth in `tests/integration/test_settings_reauth.py`
+- [x] T039 [US4] Add integration test for log viewer rendering in `tests/integration/test_settings_logs.py`
 
 ### Implementation for User Story 4
 
-- [ ] T040 [P] [US4] Implement settings repository and preference schema in `desktop_app/settings/repository.py`
-- [ ] T041 [P] [US4] Implement settings service for update policy and preferences in `desktop_app/settings/service.py`
-- [ ] T042 [US4] Implement settings panel UI and forms in `desktop_app/ui/settings_view.py`
-- [ ] T043 [US4] Implement in-app log viewer and filtering in `desktop_app/ui/components/log_viewer.py`
-- [ ] T057 [US4] Implement scheduled daily update-check scheduler with prompt and defer actions in `desktop_app/settings/update_scheduler.py`
-- [ ] T058 [US4] Add integration test for daily update check prompt and user deferral flow in `tests/integration/test_update_scheduler.py`
+- [x] T040 [P] [US4] Implement settings repository and preference schema in `desktop_app/settings/repository.py`
+- [x] T041 [P] [US4] Implement settings service for update policy and preferences in `desktop_app/settings/service.py`
+- [x] T042 [US4] Implement settings panel UI and forms in `desktop_app/ui/settings_view.py`
+- [x] T043 [US4] Implement in-app log viewer and filtering in `desktop_app/ui/components/log_viewer.py`
+- [x] T057 [US4] Implement scheduled daily update-check scheduler with prompt and defer actions in `desktop_app/settings/update_scheduler.py`
+- [x] T058 [US4] Add integration test for daily update check prompt and user deferral flow in `tests/integration/test_update_scheduler.py`
 
 **Checkpoint**: US4 independently provides complete settings management.
 
@@ -153,15 +153,15 @@
 
 ### Tests for User Story 5
 
-- [ ] T044 [P] [US5] Add tooltip rendering and accessibility tests in `tests/unit/test_help_tooltips.py`
-- [ ] T045 [P] [US5] Add integration test for contextual help routing in `tests/integration/test_help_navigation.py`
+- [x] T044 [P] [US5] Add tooltip rendering and accessibility tests in `tests/unit/test_help_tooltips.py`
+- [x] T045 [P] [US5] Add integration test for contextual help routing in `tests/integration/test_help_navigation.py`
 
 ### Implementation for User Story 5
 
-- [ ] T046 [P] [US5] Implement help-content provider and FAQ mapping in `desktop_app/help/content.py`
-- [ ] T047 [P] [US5] Implement reusable tooltip/help components in `desktop_app/ui/components/help.py`
-- [ ] T048 [US5] Integrate contextual help in auth/chat/settings screens in `desktop_app/ui/help_integration.py`
-- [ ] T049 [US5] Implement error-to-help link mapping in `desktop_app/help/error_guidance.py`
+- [x] T046 [P] [US5] Implement help-content provider and FAQ mapping in `desktop_app/help/content.py`
+- [x] T047 [P] [US5] Implement reusable tooltip/help components in `desktop_app/ui/components/help.py`
+- [x] T048 [US5] Integrate contextual help in auth/chat/settings screens in `desktop_app/ui/help_integration.py`
+- [x] T049 [US5] Implement error-to-help link mapping in `desktop_app/help/error_guidance.py`
 
 **Checkpoint**: US5 independently improves user onboarding and recovery.
 
@@ -171,13 +171,13 @@
 
 **Purpose**: Final hardening and release quality checks across all stories.
 
-- [ ] T050 [P] Run full automated test matrix and fix regressions in `tests/`
-- [ ] T051 [P] Add security hardening checks for secrets/log redaction in `desktop_app/security/credentials.py` and `desktop_app/observability/logging.py`
-- [ ] T052 Validate quickstart instructions end-to-end in `specs/001-standalone-intervals-app/quickstart.md`
-- [ ] T053 [P] Finalize release checklist and installer verification in `packaging/RELEASE_CHECKLIST.md`
-- [ ] T054 Update user and operator documentation for deploy/run/troubleshooting in `README.md` and `SETUP_NOTES.md`
-- [ ] T059 Add uptime SLO instrumentation and rolling availability reports for authenticated sessions in `desktop_app/observability/uptime.py`
-- [ ] T060 Add resilience and uptime verification tests for process restart/recovery scenarios in `tests/reliability/test_uptime_resilience.py`
+- [x] T050 [P] Run full automated test matrix and fix regressions in `tests/`
+- [x] T051 [P] Add security hardening checks for secrets/log redaction in `desktop_app/security/credentials.py` and `desktop_app/observability/logging.py`
+- [x] T052 Validate quickstart instructions end-to-end in `specs/001-standalone-intervals-app/quickstart.md`
+- [x] T053 [P] Finalize release checklist and installer verification in `packaging/RELEASE_CHECKLIST.md`
+- [x] T054 Update user and operator documentation for deploy/run/troubleshooting in `README.md` and `SETUP_NOTES.md`
+- [x] T059 Add uptime SLO instrumentation and rolling availability reports for authenticated sessions in `desktop_app/observability/uptime.py`
+- [x] T060 Add resilience and uptime verification tests for process restart/recovery scenarios in `tests/reliability/test_uptime_resilience.py`
 
 ---
 
