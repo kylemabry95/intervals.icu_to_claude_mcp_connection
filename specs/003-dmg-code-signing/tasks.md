@@ -22,7 +22,7 @@
 
 **Purpose**: Create the two entitlements plist files that both signing phases depend on; verify toolchain availability.
 
-- [ ] T001 Verify Xcode CLT toolchain: run `xcode-select -p && xcrun --version && codesign --version` and confirm all present in `packaging/macos/README.md`
+- [ ] T001 Verify Xcode CLT toolchain: run `xcode-select -p && xcrun --version && codesign --version` and add a "Prerequisites" section to `packaging/macos/README.md` listing the required tools (scope: toolchain verification only; flag documentation is in T026)
 - [ ] T002 [P] Create `packaging/macos/entitlements-app.plist` with hardened runtime entitlements for PyInstaller Python app (dyld-env-vars, unsigned-memory, network.client; all privacy caps denied)
 - [ ] T003 [P] Create `packaging/macos/entitlements-dmg.plist` with minimal container entitlements (dyld-env-vars only)
 - [ ] T004 Validate both plist files: `plutil -lint packaging/macos/entitlements-app.plist && plutil -lint packaging/macos/entitlements-dmg.plist`
@@ -106,7 +106,7 @@
 - [ ] T023 Run quickstart.md Scenario 1 (dev build, ad-hoc): `./packaging/macos/build.sh --version 1.0.0` — confirm warning block present, ad-hoc signatures valid, DMG mounts
 - [ ] T024 Run quickstart.md Scenario 4 (entitlements validation): `plutil -lint` both plist files; `codesign -d --entitlements -` on signed app bundle confirms correct keys embedded
 - [ ] T025 [P] Run quickstart.md Scenario 6 (error handling): `./packaging/macos/build.sh --sign "Developer ID Application: Nobody (FAKE)"` — confirm non-zero exit and error 1001 message
-- [ ] T026 [P] Update `packaging/macos/README.md` with new `--sign [identity]`, `--notarize`, `--verbose` flag documentation and certificate setup prerequisites
+- [ ] T026 [P] Update `packaging/macos/README.md` with new `--sign [identity]`, `--notarize`, `--verbose` flag documentation (scope: flag docs and certificate setup guide; toolchain prerequisites section is added by T001)
 - [ ] T027 [P] Update `README.md` "Build & Deploy" section: document that production builds require `--sign "Developer ID Application: ..."` flag and link to certificate setup guide
 - [ ] T028 Run `bash -n packaging/macos/build.sh` to confirm no syntax errors; run `shellcheck packaging/macos/build.sh` if available
 - [ ] T029 Commit final implementation; push branch `003-dmg-code-signing`
@@ -132,7 +132,7 @@ T023-T029 (Polish & validation)
 
 ### Parallel Execution Per Story
 
-**US1** (once T005-T008 done): T009 → T010+T012 in parallel → T011 → T013  
+**US1** (once T005-T008 done): T009 → T010 → T011 → T012 → T013 (sequential; DMG signing T011 must follow app signing T009; DMG verify T012 must follow T011)  
 **US2** (once T009-T013 done): T014 → T015 → T016 → T017 → T018  
 **US3** (once T005-T008 done): T019 → T020 → T021+T022 in parallel  
 **Final**: T023 → T024+T025+T028 in parallel → T026+T027 in parallel → T029
@@ -146,3 +146,5 @@ T023-T029 (Polish & validation)
 **Full Scope** (all phases — T001-T029): Adds notarization (Apple-verified, stapled), improved developer UX with ad-hoc fallback warnings, and full documentation. Recommended since cert setup is in progress.
 
 **Current Blocker**: No Developer ID certificate available yet. T001-T022 can all be implemented and validated with ad-hoc signing (Scenario 1 and 6). T009-T013 and T014-T018 require a valid cert for final Gatekeeper acceptance testing (Scenarios 2-5).
+
+> **Coverage note (F2)**: Success Criteria SC-3 (Gatekeeper acceptance on clean system) and SC-4 (post-install app launch, no prompt) are satisfied by quickstart.md Scenarios 2, 3, and 5. These scenarios require a Developer ID certificate and are intentionally deferred to post-cert validation. They are not included in T023–T029 because they cannot be executed until the certificate is obtained. Mark them complete only after running Scenarios 2, 3, and 5 successfully.

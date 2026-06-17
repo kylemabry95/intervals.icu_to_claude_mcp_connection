@@ -64,7 +64,7 @@ specs/003-dmg-code-signing/
 ├── plan.md              ✅ This file
 ├── research.md          ✅ Existing (complete)
 ├── data-model.md        ✅ Existing (complete)
-├── quickstart.md        🔲 To create (Phase 1)
+├── quickstart.md        ✅ Created (commit 352f0b7)
 ├── contracts/
 │   └── dmg-signing.md  ✅ Existing (complete)
 └── tasks.md             🔲 Created by /speckit.tasks (not this command)

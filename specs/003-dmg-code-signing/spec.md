@@ -144,11 +144,11 @@ Users receive a Gatekeeper warning when attempting to open/mount the `IntervalsI
    - Wait for notarization approval
    - Staple notarization ticket to DMG: `xcrun stapler staple`
 
-2. **CI/CD Integration**
-   - GitHub Actions workflow for automated notarization
-   - Environment variables for credentials (GitHub Secrets)
-   - Automated retry logic for transient failures
-   - Build artifacts published after successful notarization
+2. ~~**CI/CD Integration**~~ _(Out of scope — deferred to future feature per clarification 2026-06-17)_
+   - ~~GitHub Actions workflow for automated notarization~~
+   - ~~Environment variables for credentials (GitHub Secrets)~~
+   - ~~Automated retry logic for transient failures~~
+   - ~~Build artifacts published after successful notarization~~
 
 ### Build Script Updates (Phase 1)
 
@@ -362,7 +362,7 @@ Developer ID Installer Certificate (optional):
 
 ## Related Documents
 
-- [DMG-Integration Contract](contracts/dmg-integration.md) — Technical implementation details
+- [DMG Signing Contract](contracts/dmg-signing.md) — Technical implementation details
 - [Build System Research](research.md) — Signing tools and approaches
 - [../002-seamless-dmg-install/spec.md](../002-seamless-dmg-install/spec.md) — App installation (predecessor feature)
 
