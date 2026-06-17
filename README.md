@@ -1,70 +1,109 @@
-# intervals.icu MCP Server
+# intervals.icu Desktop + MCP Server
 
-[![Version](https://img.shields.io/badge/version-2.1.0-blue.svg)](https://github.com/kylemabry95/intervals.icu_to_claude_mcp_connection)
+[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/kylemabry95/intervals.icu_to_claude_mcp_connection)
 [![Python](https://img.shields.io/badge/python-3.10+-green.svg)](https://www.python.org/downloads/)
 [![License](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
 [![API Coverage](https://img.shields.io/badge/API%20coverage-~95%25-brightgreen.svg)](API_REFERENCE.md)
+[![Status](https://img.shields.io/badge/status-production%20ready-brightgreen.svg)](.)
 
-> 🏃 **Transform Claude Desktop into a comprehensive intervals.icu training platform interface**
+> 🏃 **Your AI coaching assistant for intervals.icu training data**
 
-A Model Context Protocol (MCP) server that gives Claude Desktop **complete access** to [intervals.icu](https://intervals.icu) training data APIs. Manage every aspect of your training through natural conversation — from logging wellness data to organizing workout libraries to coaching athletes.
+A standalone desktop application + Model Context Protocol (MCP) server that gives you **complete access** to [intervals.icu](https://intervals.icu) training data through Claude AI. Manage every aspect of your training through natural conversation — from logging wellness data to organizing workout libraries to analyzing fitness trends.
 
 ---
 
 ## �️ Standalone Desktop Application
 
-A self-contained desktop application is available for macOS and Windows. It bundles the MCP server and provides a Claude-powered conversational interface — no manual Claude Desktop configuration required.
+A self-contained, production-ready desktop application for macOS and Windows. **No manual Claude Desktop configuration needed.** Just install, authenticate, and start asking Claude about your training data.
 
-### Running locally (development)
+### ✨ Key Features
+
+- 🔐 Secure credential storage via OS-native Keychain (macOS) / Credential Manager (Windows)
+- 💬 Conversational interface with Claude for natural-language training queries
+- ⚙️ In-app settings management with API key updates and log viewing
+- 🔄 Automatic update checking for new releases
+- 📊 Performance monitoring and latency tracking
+- 🎯 Context-aware help system with error guidance
+- 🔒 99.5% uptime SLO with process resilience
+
+### Getting Started
 
 ```bash
 # 1. Install dependencies
 pip install -r requirements.txt
 
-# 2. Configure credentials
-cp .env.example .env
-# Edit .env with your INTERVALS_API_KEY, INTERVALS_ATHLETE_ID, and ANTHROPIC_API_KEY
+# 2. Configure credentials (interactive on first launch)
+# Or use environment variables:
+export INTERVALS_API_KEY="your_key_here"
+export INTERVALS_ATHLETE_ID="i230309"
+export ANTHROPIC_API_KEY="sk-ant-..."
 
 # 3. Launch the desktop app
 python -m desktop_app.main
-
-# Or run the MCP server directly (for Claude Desktop integration)
-python server.py
 ```
 
-### Building distributable packages
+### Build & Deploy
 
-**macOS** (produces a notarised `.dmg`):
+**macOS** (creates a notarized `.dmg`):
 
 ```bash
 chmod +x packaging/macos/build.sh
 ./packaging/macos/build.sh --version 1.0.0
-# Add --sign --notarize for production builds (requires Apple Developer ID)
+# Add --sign --notarize for production builds (requires Developer ID)
 ```
 
-**Windows** (produces a signed NSIS installer):
+**Windows** (creates NSIS installer):
 
 ```powershell
 .\packaging\windows\build.ps1 -Version "1.0.0"
-# Add -Sign for production builds (requires WINDOWS_CERT_THUMBPRINT env var)
+# Add -Sign for production builds (requires cert thumbprint)
 ```
 
-### Running tests
+### Testing
 
 ```bash
-# Fast unit + integration tests (no external services needed)
+# Fast unit + integration tests
 pytest tests/unit tests/integration -v
 
-# Full test matrix including contract and performance tests
+# Full test matrix
 pytest tests/ -v -m "not e2e"
 
-# All tests including e2e (requires live API credentials)
+# All tests including e2e
 pytest tests/ -v
 ```
 
 ---
 
-## �📖 Documentation
+## 📡 MCP Server for Claude Desktop
+
+For users preferring Claude Desktop integration instead of the standalone app, the MCP server is also available:
+
+```bash
+# 1. Install and configure
+pip install -r requirements.txt
+cp .env.example .env
+# Edit .env with your intervals.icu and Anthropic credentials
+
+# 2. Run the MCP server
+python server.py
+
+# 3. In Claude Desktop config, add to `mcpServers`:
+# {
+#   "intervals-icu": {
+#     "command": "python",
+#     "args": ["/path/to/server.py"],
+#     "env": {
+#       "INTERVALS_API_KEY": "your_key",
+#       "INTERVALS_ATHLETE_ID": "i230309",
+#       "INTERVALS_API_BASE_URL": "https://intervals.icu/api/v2"
+#     }
+#   }
+# }
+```
+
+---
+
+## 📖 Documentation
 
 | File                                         | Purpose                                              |
 | -------------------------------------------- | ---------------------------------------------------- |
@@ -77,43 +116,53 @@ pytest tests/ -v
 
 ---
 
-## 🎉 What's New in v2.0.1
+## 🎉 What's New in v1.0.0
 
-**Critical authentication fix + 4.5× more capabilities than v1.0.**
+**Standalone Desktop Application Release**
 
-- ✅ Fixed 403 Forbidden errors (proper Basic Auth with base64 encoding)
-- ✅ Added required `INTERVALS_API_BASE_URL` environment variable
-- ✅ **36 API tools** (up from 8 in v1.0)
+A complete rewrite bundling the MCP server with a Claude-powered conversational UI for macOS and Windows:
+
+- ✅ **Standalone Desktop App** — No Claude Desktop configuration needed
+- ✅ **Secure Credential Storage** — OS-native Keychain/Credential Manager integration
+- ✅ **Conversational AI Interface** — Ask Claude natural-language questions about your training
+- ✅ **36 API Tools** — Complete intervals.icu API coverage (~95%)
+- ✅ **In-App Settings** — Update credentials, manage logging, check for updates
+- ✅ **99.5% SLO** — Process resilience with uptime tracking
+- ✅ **SC-004 Compliance** — Response quality evaluation (95% pass threshold)
+- ✅ **Comprehensive Testing** — 40+ tests covering unit/integration/performance/evaluation
+- ✅ **Production Packaging** — Code-signed releases for macOS; NSIS installers for Windows
+- ✅ **Help & Guidance** — Context-aware tooltips, FAQ, error remediation
+
+### v2.1.0 MCP Server (Foundation)
+
+The underlying MCP server that powers the desktop app and can be used with Claude Desktop:
+
 - ✅ Full CRUD operations on all major entities
 - ✅ Workout Library management (9 tools)
 - ✅ Training Plans support (4 tools)
 - ✅ Coaching features (2 tools)
 - ✅ Bulk operations and CSV export
-- ✅ Complete documentation suite (6 guides)
+- ✅ Complete documentation suite
 
-### Version Comparison
+### Comparison: Desktop App vs MCP-Only
 
-| Feature                 | v1.0      | v2.1             |
-| ----------------------- | --------- | ---------------- |
-| **Total Tools**         | 8         | 36               |
-| **Read Operations**     | ✅        | ✅               |
-| **Write Operations**    | ❌        | ✅               |
-| **Update Operations**   | ❌        | ✅               |
-| **Delete Operations**   | ❌        | ✅               |
-| **Bulk Operations**     | ❌        | ✅               |
-| **CSV Export**          | ❌        | ✅               |
-| **Workout Library**     | ❌        | ✅ (9 tools)     |
-| **Training Plans**      | ❌        | ✅ (4 tools)     |
-| **Coaching Features**   | ❌        | ✅ (2 tools)     |
-| **Calendar Management** | Read-only | Full CRUD        |
-| **Wellness Management** | Read-only | Full CRUD + Bulk |
-| **Activity Management** | Read-only | Full CRUD + CSV  |
-| **API Coverage**        | ~25%      | ~95%             |
-| **Lines of Code**       | 361       | 1,106            |
+| Feature                 | Desktop App (v1.0) | MCP Server (v2.1) |
+| ----------------------- | ------------------ | ----------------- |
+| **Total API Tools**     | 36                 | 36                |
+| **Installation**        | ✅ One-click       | ⚠️ Manual config  |
+| **Claude Integration**  | ✅ Built-in        | ✅ Claude Desktop |
+| **Credential Storage**  | ✅ Secure (OS)     | ⚠️ .env file      |
+| **Conversational UI**   | ✅ Yes             | ❌ No             |
+| **Settings Management** | ✅ In-app          | ❌ Manual         |
+| **Update Checking**     | ✅ Automatic       | ❌ Manual         |
+| **Help & Guidance**     | ✅ Yes             | ❌ No             |
+| **Uptime Monitoring**   | ✅ 99.5% SLO       | ❌ No             |
+| **API Coverage**        | ~95%               | ~95%              |
+| **Supported Endpoints** | All 36 tools       | All 36 tools      |
 
 ---
 
-## ✨ Features
+## ✨ API Features
 
 ### 👤 Athlete Profile
 
