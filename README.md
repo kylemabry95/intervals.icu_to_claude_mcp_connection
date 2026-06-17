@@ -1,71 +1,175 @@
-# intervals.icu MCP Server
+# intervals.icu Desktop + MCP Server
 
-[![Version](https://img.shields.io/badge/version-2.1.0-blue.svg)](https://github.com/kylemabry95/intervals.icu_to_claude_mcp_connection)
+[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/kylemabry95/intervals.icu_to_claude_mcp_connection)
 [![Python](https://img.shields.io/badge/python-3.10+-green.svg)](https://www.python.org/downloads/)
 [![License](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
 [![API Coverage](https://img.shields.io/badge/API%20coverage-~95%25-brightgreen.svg)](API_REFERENCE.md)
+[![Status](https://img.shields.io/badge/status-production%20ready-brightgreen.svg)](.)
 
-> 🏃 **Transform Claude Desktop into a comprehensive intervals.icu training platform interface**
+> 🏃 **Your AI coaching assistant for intervals.icu training data**
 
-A Model Context Protocol (MCP) server that gives Claude Desktop **complete access** to [intervals.icu](https://intervals.icu) training data APIs. Manage every aspect of your training through natural conversation — from logging wellness data to organizing workout libraries to coaching athletes.
+A standalone desktop application + Model Context Protocol (MCP) server that gives you **complete access** to [intervals.icu](https://intervals.icu) training data through Claude AI. Manage every aspect of your training through natural conversation — from logging wellness data to organizing workout libraries to analyzing fitness trends.
+
+---
+
+## �️ Standalone Desktop Application
+
+A self-contained, production-ready desktop application for macOS and Windows. **No manual Claude Desktop configuration needed.** Just install, authenticate, and start asking Claude about your training data.
+
+### ✨ Key Features
+
+- 🔐 Secure credential storage via OS-native Keychain (macOS) / Credential Manager (Windows)
+- 💬 Conversational interface with Claude for natural-language training queries
+- ⚙️ In-app settings management with API key updates and log viewing
+- 🔄 Automatic update checking for new releases
+- 📊 Performance monitoring and latency tracking
+- 🎯 Context-aware help system with error guidance
+- 🔒 99.5% uptime SLO with process resilience
+
+### Getting Started
+
+```bash
+# 1. Install dependencies
+pip install -r requirements.txt
+
+# 2. Configure credentials (interactive on first launch)
+# Or use environment variables:
+export INTERVALS_API_KEY="your_key_here"
+export INTERVALS_ATHLETE_ID="i230309"
+export ANTHROPIC_API_KEY="sk-ant-..."
+
+# 3. Launch the desktop app
+python -m desktop_app.main
+```
+
+### Build & Deploy
+
+**macOS** (creates a notarized `.dmg`):
+
+```bash
+chmod +x packaging/macos/build.sh
+./packaging/macos/build.sh --version 1.0.0
+# Add --sign --notarize for production builds (requires Developer ID)
+```
+
+**Windows** (creates NSIS installer):
+
+```powershell
+.\packaging\windows\build.ps1 -Version "1.0.0"
+# Add -Sign for production builds (requires cert thumbprint)
+```
+
+### Testing
+
+```bash
+# Fast unit + integration tests
+pytest tests/unit tests/integration -v
+
+# Full test matrix
+pytest tests/ -v -m "not e2e"
+
+# All tests including e2e
+pytest tests/ -v
+```
+
+---
+
+## 📡 MCP Server for Claude Desktop
+
+For users preferring Claude Desktop integration instead of the standalone app, the MCP server is also available:
+
+```bash
+# 1. Install and configure
+pip install -r requirements.txt
+cp .env.example .env
+# Edit .env with your intervals.icu and Anthropic credentials
+
+# 2. Run the MCP server
+python server.py
+
+# 3. In Claude Desktop config, add to `mcpServers`:
+# {
+#   "intervals-icu": {
+#     "command": "python",
+#     "args": ["/path/to/server.py"],
+#     "env": {
+#       "INTERVALS_API_KEY": "your_key",
+#       "INTERVALS_ATHLETE_ID": "i230309",
+#       "INTERVALS_API_BASE_URL": "https://intervals.icu/api/v2"
+#     }
+#   }
+# }
+```
 
 ---
 
 ## 📖 Documentation
 
-| File | Purpose |
-|------|---------|
-| **README.md** *(this file)* | Feature overview, installation, and usage examples |
-| [QUICKSTART.md](QUICKSTART.md) | Fast setup guide with troubleshooting tips |
-| [API_REFERENCE.md](API_REFERENCE.md) | Complete endpoint specifications and parameters |
-| [CHANGELOG.md](CHANGELOG.md) | Version history and release notes |
-| [EXTENSION_SUMMARY.md](EXTENSION_SUMMARY.md) | Technical architecture and implementation details |
-| [PROJECT_SUMMARY.md](PROJECT_SUMMARY.md) | Project metrics, deliverables, and completion status |
+| File                                         | Purpose                                              |
+| -------------------------------------------- | ---------------------------------------------------- |
+| **README.md** _(this file)_                  | Feature overview, installation, and usage examples   |
+| [QUICKSTART.md](QUICKSTART.md)               | Fast setup guide with troubleshooting tips           |
+| [API_REFERENCE.md](API_REFERENCE.md)         | Complete endpoint specifications and parameters      |
+| [CHANGELOG.md](CHANGELOG.md)                 | Version history and release notes                    |
+| [EXTENSION_SUMMARY.md](EXTENSION_SUMMARY.md) | Technical architecture and implementation details    |
+| [PROJECT_SUMMARY.md](PROJECT_SUMMARY.md)     | Project metrics, deliverables, and completion status |
 
 ---
 
-## 🎉 What's New in v2.0.1
+## 🎉 What's New in v1.0.0
 
-**Critical authentication fix + 4.5× more capabilities than v1.0.**
+**Standalone Desktop Application Release**
 
-- ✅ Fixed 403 Forbidden errors (proper Basic Auth with base64 encoding)
-- ✅ Added required `INTERVALS_API_BASE_URL` environment variable
-- ✅ **36 API tools** (up from 8 in v1.0)
+A complete rewrite bundling the MCP server with a Claude-powered conversational UI for macOS and Windows:
+
+- ✅ **Standalone Desktop App** — No Claude Desktop configuration needed
+- ✅ **Secure Credential Storage** — OS-native Keychain/Credential Manager integration
+- ✅ **Conversational AI Interface** — Ask Claude natural-language questions about your training
+- ✅ **36 API Tools** — Complete intervals.icu API coverage (~95%)
+- ✅ **In-App Settings** — Update credentials, manage logging, check for updates
+- ✅ **99.5% SLO** — Process resilience with uptime tracking
+- ✅ **SC-004 Compliance** — Response quality evaluation (95% pass threshold)
+- ✅ **Comprehensive Testing** — 40+ tests covering unit/integration/performance/evaluation
+- ✅ **Production Packaging** — Code-signed releases for macOS; NSIS installers for Windows
+- ✅ **Help & Guidance** — Context-aware tooltips, FAQ, error remediation
+
+### v2.1.0 MCP Server (Foundation)
+
+The underlying MCP server that powers the desktop app and can be used with Claude Desktop:
+
 - ✅ Full CRUD operations on all major entities
 - ✅ Workout Library management (9 tools)
 - ✅ Training Plans support (4 tools)
 - ✅ Coaching features (2 tools)
 - ✅ Bulk operations and CSV export
-- ✅ Complete documentation suite (6 guides)
+- ✅ Complete documentation suite
 
-### Version Comparison
+### Comparison: Desktop App vs MCP-Only
 
-| Feature | v1.0 | v2.1 |
-|---------|------|------|
-| **Total Tools** | 8 | 36 |
-| **Read Operations** | ✅ | ✅ |
-| **Write Operations** | ❌ | ✅ |
-| **Update Operations** | ❌ | ✅ |
-| **Delete Operations** | ❌ | ✅ |
-| **Bulk Operations** | ❌ | ✅ |
-| **CSV Export** | ❌ | ✅ |
-| **Workout Library** | ❌ | ✅ (9 tools) |
-| **Training Plans** | ❌ | ✅ (4 tools) |
-| **Coaching Features** | ❌ | ✅ (2 tools) |
-| **Calendar Management** | Read-only | Full CRUD |
-| **Wellness Management** | Read-only | Full CRUD + Bulk |
-| **Activity Management** | Read-only | Full CRUD + CSV |
-| **API Coverage** | ~25% | ~95% |
-| **Lines of Code** | 361 | 1,106 |
+| Feature                 | Desktop App (v1.0) | MCP Server (v2.1) |
+| ----------------------- | ------------------ | ----------------- |
+| **Total API Tools**     | 36                 | 36                |
+| **Installation**        | ✅ One-click       | ⚠️ Manual config  |
+| **Claude Integration**  | ✅ Built-in        | ✅ Claude Desktop |
+| **Credential Storage**  | ✅ Secure (OS)     | ⚠️ .env file      |
+| **Conversational UI**   | ✅ Yes             | ❌ No             |
+| **Settings Management** | ✅ In-app          | ❌ Manual         |
+| **Update Checking**     | ✅ Automatic       | ❌ Manual         |
+| **Help & Guidance**     | ✅ Yes             | ❌ No             |
+| **Uptime Monitoring**   | ✅ 99.5% SLO       | ❌ No             |
+| **API Coverage**        | ~95%               | ~95%              |
+| **Supported Endpoints** | All 36 tools       | All 36 tools      |
 
 ---
 
-## ✨ Features
+## ✨ API Features
 
 ### 👤 Athlete Profile
+
 - **`get_athlete_profile`** — Retrieve FTP, weight, training zones, and account settings
 
 ### 💪 Wellness & Recovery
+
 - **`get_wellness_data`** — Daily wellness metrics for a date range
 - **`get_wellness_single`** — Wellness data for a specific date
 - **`update_wellness`** — Update a single wellness entry
@@ -74,6 +178,7 @@ A Model Context Protocol (MCP) server that gives Claude Desktop **complete acces
 Metrics covered: sleep quality and duration, HRV, resting heart rate, weight, body composition, subjective scores (fatigue, soreness, stress, motivation), readiness, CTL/ATL/TSB.
 
 ### 🚴 Training Activities
+
 - **`get_activities`** — Workouts for a date range with key metrics
 - **`get_activities_csv`** — Export all activities to CSV
 - **`get_activity_details`** — Granular data including power/HR streams and detected intervals
@@ -81,10 +186,12 @@ Metrics covered: sleep quality and duration, HRV, resting heart rate, weight, bo
 - **`delete_activity`** — Remove an activity
 
 ### 📊 Fitness Analytics
+
 - **`get_fitness_trends`** — CTL (Fitness), ATL (Fatigue), TSB (Form), and ramp rate
 - **`get_power_curve`** — Best power efforts across different durations
 
 ### 📅 Calendar & Event Management
+
 - **`get_calendars`** — List all calendars
 - **`get_events`** — Planned races, workouts, and notes
 - **`get_event`** — Details for a specific event
@@ -94,13 +201,16 @@ Metrics covered: sleep quality and duration, HRV, resting heart rate, weight, bo
 - **`get_planned_workouts`** — Filter for upcoming scheduled training sessions
 
 ### 📚 Workout Library
+
 - **`get_folders`** / **`create_folder`** / **`update_folder`** / **`delete_folder`**
 - **`get_workouts`** / **`get_workout`** / **`create_workout`** / **`update_workout`** / **`delete_workout`**
 
 ### 📈 Training Plans
+
 - **`get_training_plans`** / **`create_training_plan`** / **`update_training_plan`** / **`delete_training_plan`**
 
 ### 👥 Coaching
+
 - **`get_coached_athletes`** — Athletes you coach with current fitness metrics
 - **`get_wellness_summary`** — Wellness overview for coached athletes
 
@@ -108,14 +218,14 @@ Metrics covered: sleep quality and duration, HRV, resting heart rate, weight, bo
 
 ## ⚡ Quick Stats
 
-| Metric | Value |
-|--------|-------|
-| **Total API Tools** | 36 |
-| **API Coverage** | ~95% of public intervals.icu APIs |
-| **CRUD Support** | Full (Create, Read, Update, Delete) |
-| **Code Lines** | 1,106 |
-| **Documentation** | 7 comprehensive guides |
-| **Supported Operations** | GET, POST, PUT, DELETE |
+| Metric                   | Value                               |
+| ------------------------ | ----------------------------------- |
+| **Total API Tools**      | 36                                  |
+| **API Coverage**         | ~95% of public intervals.icu APIs   |
+| **CRUD Support**         | Full (Create, Read, Update, Delete) |
+| **Code Lines**           | 1,106                               |
+| **Documentation**        | 7 comprehensive guides              |
+| **Supported Operations** | GET, POST, PUT, DELETE              |
 
 ---
 
@@ -124,6 +234,7 @@ Metrics covered: sleep quality and duration, HRV, resting heart rate, weight, bo
 > 💡 For a faster path, see [QUICKSTART.md](QUICKSTART.md). It includes platform-specific notes and a comprehensive troubleshooting section.
 
 ### Prerequisites
+
 - Python 3.10 or higher
 - [Claude Desktop](https://claude.ai/download)
 - An active [intervals.icu](https://intervals.icu) account with API access
@@ -190,31 +301,37 @@ Close and reopen Claude Desktop to load the MCP server.
 ## 💬 Usage Examples
 
 ### Wellness & Recovery
+
 - "What's my HRV trend over the past 2 weeks?"
 - "Update my wellness for today: weight 70 kg, HRV 65 ms, sleep quality 4"
 - "Am I getting enough recovery based on my recent wellness data?"
 
 ### Training Analysis
+
 - "Summarize my training volume for the past 30 days"
 - "What were my hardest workouts this week?"
 - "Export all my activities to CSV"
 
 ### Fitness Trends
+
 - "What's my current fitness (CTL) and form (TSB)?"
 - "Am I building fitness too quickly? Check my ramp rate"
 - "When was I at peak fitness in the last 90 days?"
 
 ### Calendar & Planning
+
 - "What races do I have coming up?"
 - "Create a workout event for tomorrow: 60 min Z2 ride"
 - "Delete the workout planned for next Tuesday"
 
 ### Workout Library
+
 - "List all my workout folders"
 - "Add a new workout: 4×8 min @ 110% FTP with 4 min rest"
 - "Create a folder called 'VO2max Sessions'"
 
 ### Coaching
+
 - "List all the athletes I coach"
 - "What's the fitness trend for athlete John Doe?"
 
@@ -223,18 +340,21 @@ Close and reopen Claude Desktop to load the MCP server.
 ## 🔧 Troubleshooting
 
 ### Server not appearing in Claude Desktop
+
 1. Verify the config file path is correct for your OS
 2. Validate JSON syntax: `python -m json.tool ~/Library/Application\ Support/Claude/claude_desktop_config.json`
 3. Confirm the absolute path to `server.py` is correct
 4. Check that all three environment variables are present
 
 ### 401 / 403 Authentication Errors
+
 - Confirm you're using v2.0.1 of `server.py` (includes the authentication fix)
 - Ensure `INTERVALS_API_BASE_URL` is set
 - Verify the athlete ID includes the `i` prefix
 - Regenerate your API key in intervals.icu settings if needed
 
 ### No Data Returned
+
 - Use `YYYY-MM-DD` date format
 - Try a broader date range
 - Confirm you have data in intervals.icu for the requested period
@@ -256,6 +376,7 @@ For a full troubleshooting guide, see [QUICKSTART.md](QUICKSTART.md).
 - `.gitignore` prevents accidental commit of `.env` files and credential configs
 
 **Best practices:**
+
 - Never share your API key or config file
 - Protect the config file with restrictive permissions: `chmod 600 claude_desktop_config.json`
 - Regenerate your API key if you suspect compromise
@@ -267,6 +388,7 @@ For a full troubleshooting guide, see [QUICKSTART.md](QUICKSTART.md).
 ~95% of the public intervals.icu API is already covered. Potential areas for future contribution include FIT/GPX/TCX file uploads, workout file downloads (`.zwo`, `.mrc`, `.erg`), real-time activity streams, advanced analytics, and webhook integration.
 
 When contributing:
+
 - Match existing code style and naming conventions
 - Add docstrings to all new tools
 - Update relevant documentation (README, QUICKSTART, API_REFERENCE)
@@ -277,11 +399,13 @@ When contributing:
 ## 📋 Version History
 
 ### v2.1.0 - Security Hardening (March 2025)
+
 - ✅ Fixed Basic Auth encoding and removed credential leakage in debug logs
 - ✅ Added input validation (dates, IDs), rate limiting, HTTP timeouts
 - ✅ Sanitized error responses; added `.gitignore` for secrets protection
 
 ### v2.0.0 - Major Release (March 2025)
+
 - ✅ Extended from 8 to 36 API tools (4.5x increase)
 - ✅ Added full CRUD operations on all major entities
 - ✅ Workout Library management (9 new tools)
@@ -291,6 +415,7 @@ When contributing:
 - ✅ Comprehensive documentation (7 guides)
 
 ### v1.0.0 - Initial Release (March 2025)
+
 - ✅ Basic read-only access to 8 core APIs
 
 See [CHANGELOG.md](CHANGELOG.md) for detailed version history.
@@ -322,7 +447,7 @@ Built for the [Model Context Protocol](https://modelcontextprotocol.io/) to inte
 
 ---
 
-*Made with ❤️ for athletes training smarter, not just harder*
+_Made with ❤️ for athletes training smarter, not just harder_
 
 ⭐ Star this repo if it's useful for your training!
 

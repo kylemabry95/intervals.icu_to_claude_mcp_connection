@@ -8,6 +8,16 @@
 
 **Input**: User description: "I want to build an application that runs this mcp server with Claude as a standalone application for users to interact with intervals.icu on their local machine."
 
+## Clarifications
+
+### Session 2026-06-16
+
+- Q: Update Mechanism & Frequency → A: Scheduled checks with user prompts (daily by default; user can defer)
+
+- Q2: Operating System Support → A: macOS and Windows (initial v1 targets)
+- Q3: Minimum OS Versions → A: macOS 11 (Big Sur) and Windows 10 21H2
+
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Install and Launch Application (Priority: P1)
@@ -116,8 +126,8 @@ Users may encounter unfamiliar workflows or need guidance on how to interact wit
 - **FR-009**: Application MUST handle network errors (timeouts, disconnections) gracefully without crashing
 - **FR-010**: Application MUST provide clear, actionable error messages to users when failures occur
 - **FR-011**: Application MUST log errors and events for troubleshooting (accessible via settings panel)
-- **FR-012**: Application MUST support automatic updates to incorporate new features and security fixes [NEEDS CLARIFICATION: update frequency and delivery mechanism - automatic silent updates, manual checks, or scheduled checks?]
-- **FR-013**: Application MUST work on [NEEDS CLARIFICATION: specific operating systems - macOS and Windows minimum, or include Linux?]
+- **FR-012**: Application MUST support automatic updates to incorporate new features and security fixes. Update strategy: Scheduled checks with user prompts (daily by default); users can defer updates. Update mechanism: app checks for updates daily and notifies the user with an option to install now or defer.
+- **FR-013**: Application MUST work on macOS and Windows (initial v1 targets). Linux support may be considered in later releases.
 
 ### Key Entities
 
@@ -133,10 +143,13 @@ Users may encounter unfamiliar workflows or need guidance on how to interact wit
 - **SC-001**: Users can install and launch the application without command-line interaction; average installation time is under 2 minutes
 - **SC-002**: Users can authenticate with their intervals.icu API key in under 30 seconds
 - **SC-003**: Claude responds to user queries about training data in under 5 seconds (p95 latency from user query to response displayed)
-- **SC-004**: 95% of natural language queries about training data receive coherent, accurate responses from Claude
+- **SC-004**: At least 95% of natural language queries in the acceptance evaluation suite receive responses that pass all rubric checks:
+	- factual correctness against intervals.icu source data,
+	- response grounded in executed tool outputs,
+	- complete answer to user intent without material omissions.
 - **SC-005**: Application uptime is 99.5% for authenticated users (excluding scheduled maintenance)
 - **SC-006**: Users report satisfaction with the natural language interface; 80% of surveyed users find it intuitive
-- **SC-007**: Application supports at least macOS and Windows (minimum OS versions [NEEDS CLARIFICATION: which versions?])
+- **SC-007**: Application supports macOS 11 (Big Sur) and Windows 10 21H2 (v1 minimums).
 - **SC-008**: The MCP server and application together handle 10k+ training records without performance degradation
 
 ## Assumptions

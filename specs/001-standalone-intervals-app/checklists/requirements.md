@@ -13,7 +13,7 @@
 
 ## Requirement Completeness
 
-- [ ] No [NEEDS CLARIFICATION] markers remain - **3 clarifications pending**
+ - [x] No [NEEDS CLARIFICATION] markers remain - **0 clarifications pending**
 - [x] Requirements are testable and unambiguous
 - [x] Success criteria are measurable
 - [x] Success criteria are technology-agnostic (no implementation details)
@@ -48,7 +48,7 @@
 | C | Scheduled checks with user prompts (app checks daily/weekly, notifies user, user can defer) | Balance of automation and control; users stay current without constant interruptions |
 | D | Custom | Provide your preferred update strategy |
 
-**Your choice**: 
+**Your choice**: C (Scheduled checks with prompts)
 
 ---
 
@@ -69,6 +69,11 @@
 | E | Custom versions | Specify your own OS targets and versions |
 
 **Your choice**: 
+**Your choice**: A (macOS and Windows)
+
+### Question 3: Minimum macOS and Windows Versions
+
+**Your choice**: A (macOS 11 and Windows 10 21H2)
 
 ---
 
