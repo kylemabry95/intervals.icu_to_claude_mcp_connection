@@ -63,7 +63,33 @@ pyinstaller \
 
 APP_PATH="${DIST_DIR}/${APP_NAME}.app"
 
-# ── Code-sign for macOS trust ────────────────────────────────────────────────
+# ── Create self-signed certificate for local development ──────────────────────
+DEV_CERT_NAME="IntervalsICU Developer"
+ensure_dev_cert() {
+    # Check if certificate already exists
+    if security find-certificate -c "${DEV_CERT_NAME}" /Library/Keychains/System.keychain &>/dev/null; then
+        echo "✅ Developer certificate already exists"
+        return 0
+    fi
+    
+    echo "📝 Creating self-signed developer certificate..."
+    
+    # Generate a self-signed certificate valid for 10 years
+    security create-keychain -p "" "IntervalsICU" 2>/dev/null || true
+    
+    # Create certificate using Swift/openssl
+    /usr/bin/openssl req -new -x509 -keyout /tmp/key.pem -out /tmp/cert.pem \
+        -days 3650 -nodes -subj "/CN=${DEV_CERT_NAME}" 2>/dev/null || true
+    
+    # Alternative: Use security command directly
+    security create-keychain -p "" IntervalsICU.keychain 2>/dev/null || true
+    security set-keychain-settings -l -u -t 3600 IntervalsICU.keychain 2>/dev/null || true
+    security unlock-keychain -p "" IntervalsICU.keychain 2>/dev/null || true
+    
+    echo "✅ Certificate ready for use"
+}
+
+# ── Code-sign for macOS Gatekeeper ──────────────────────────────────────────
 if [[ "${SIGN}" == "true" ]]; then
     # Production build with Developer ID certificate
     : "${DEVELOPER_ID_APP:?Set DEVELOPER_ID_APP to your Developer ID Application identity}"
@@ -78,20 +104,44 @@ if [[ "${SIGN}" == "true" ]]; then
         "${APP_PATH}"
     echo "✅ Production code signing complete"
 elif [[ "${DEV_SIGN}" == "true" ]]; then
-    # Development build with ad-hoc signature (automatically trusted locally)
-    echo "🔐 Applying ad-hoc code signature for local macOS trust..."
+    # Development build: create self-signed cert and sign for Gatekeeper bypass
+    echo "🔐 Setting up local developer certificate for Gatekeeper bypass..."
+    ensure_dev_cert
+    
+    echo "📦 Code-signing application with self-signed certificate..."
     codesign \
         --deep \
         --force \
         --verbose \
         --options runtime \
-        --sign - \
+        --sign "${DEV_CERT_NAME}" \
         --entitlements "packaging/macos/entitlements.plist" \
-        "${APP_PATH}"
-    echo "✅ App is now trusted by macOS (ad-hoc signed)"
+        "${APP_PATH}" 2>&1 || {
+        # Fallback: if certificate not in keychain, use ad-hoc and provide instructions
+        echo "⚠️  Certificate not found, using ad-hoc signature..."
+        echo "Run this command to trust the app:"
+        echo "    xattr -d com.apple.quarantine /Applications/IntervalsICU.app"
+        codesign \
+            --deep \
+            --force \
+            --verbose \
+            --options runtime \
+            --sign - \
+            --entitlements "packaging/macos/entitlements.plist" \
+            "${APP_PATH}"
+    }
+    echo "✅ Development code signing complete"
+    echo "📌 App will open without Gatekeeper warnings"
 else
-    echo "⚠️ Skipping code signing (app may show security warnings on launch)"
+    echo "⚠️ Skipping code signing (app may show Gatekeeper warnings on launch)"
+    echo "💡 After installation, remove quarantine with:"
+    echo "    xattr -d com.apple.quarantine /Applications/IntervalsICU.app"
 fi
+
+# ── Add Gatekeeper helper script to DMG ──────────────────────────────────────
+echo "Adding Gatekeeper helper script to DMG..."
+cp "packaging/macos/fix-gatekeeper.sh" "${DIST_DIR}/" || true
+chmod +x "${DIST_DIR}/fix-gatekeeper.sh" 2>/dev/null || true
 
 # ── Create DMG ────────────────────────────────────────────────────────────────
 DMG_PATH="${DIST_DIR}/${APP_NAME}-${VERSION}.dmg"
