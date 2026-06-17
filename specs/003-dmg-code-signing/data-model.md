@@ -47,16 +47,26 @@
 
 ### 3. Entitlements
 
+### 3a. App Bundle Entitlements (`entitlements-app.plist`)
+
+Required for PyInstaller-bundled Python app with hardened runtime and network access to intervals.icu API:
+
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
   "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+  <!-- Required: PyInstaller apps load Python via dyld env vars -->
   <key>com.apple.security.cs.allow-dyld-environment-variables</key>
   <true/>
+  <!-- Required: Python interpreter uses unsigned executable memory -->
   <key>com.apple.security.cs.allow-unsigned-executable-memory</key>
   <true/>
+  <!-- Required: outbound HTTPS calls to intervals.icu API -->
+  <key>com.apple.security.network.client</key>
+  <true/>
+  <!-- Explicitly denied: all privacy-sensitive capabilities -->
   <key>com.apple.security.device.microphone</key>
   <false/>
   <key>com.apple.security.device.camera</key>
@@ -67,10 +77,25 @@
   <false/>
   <key>com.apple.security.personal-information.calendars</key>
   <false/>
-  <key>com.apple.security.personal-information.reminders</key>
-  <false/>
   <key>com.apple.security.personal-information.location</key>
   <false/>
+</dict>
+</plist>
+```
+
+### 3b. DMG Container Entitlements (`entitlements-dmg.plist`)
+
+Minimal — DMG is a container image, not an executable:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <!-- Minimal: allow dyld vars for any scripts inside the DMG -->
+  <key>com.apple.security.cs.allow-dyld-environment-variables</key>
+  <true/>
 </dict>
 </plist>
 ```
