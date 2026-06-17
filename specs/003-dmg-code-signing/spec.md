@@ -45,11 +45,13 @@ Users receive a Gatekeeper warning when attempting to open/mount the `IntervalsI
 
 ### Success Criteria
 
-1. ✅ **Code-signed DMG** — `codesign -v dist/macos/IntervalsICU-1.0.0.dmg` returns exit 0
-2. ✅ **Gatekeeper acceptance** — User mounts DMG on clean system with zero warnings
-3. ✅ **App signature valid** — `codesign -v /Applications/IntervalsICU.app` after install returns exit 0
-4. ✅ **Build-time signature** — DMG signed automatically during `./build.sh` execution (production builds)
-5. ✅ **Fallback for dev** — Development builds without signing don't fail; use ad-hoc signature with guidance
+1. ✅ **App bundle signed** — `codesign -vvv IntervalsICU.app` returns exit 0 with Developer ID chain
+2. ✅ **Code-signed DMG** — `codesign -v dist/macos/IntervalsICU-1.0.0.dmg` returns exit 0
+3. ✅ **Gatekeeper acceptance** — User mounts DMG on clean system with zero warnings
+4. ✅ **App launch clean** — `codesign -v /Applications/IntervalsICU.app` after install returns exit 0; no Gatekeeper prompt on launch
+5. ✅ **Build-time signature** — Both app bundle and DMG signed automatically during `./build.sh --sign <identity>` execution
+6. ✅ **Notarized** — Apple Notary Service approves and ticket is stapled to DMG
+7. ✅ **Fallback for dev** — Development builds without signing don't fail; use ad-hoc signatures with guidance
 
 ---
 
@@ -94,24 +96,45 @@ Users receive a Gatekeeper warning when attempting to open/mount the `IntervalsI
 
 ## Functional Requirements
 
-### DMG Signing Requirements
+### App Bundle Signing Requirements (Phase 1)
 
-1. **Code Signing** (Phase 1)
+1. **App Bundle Code Signing**
+   - Sign `IntervalsICU.app` with Developer ID Application certificate before DMG creation
+   - Use `--deep` flag to sign all nested binaries and frameworks
+   - Apply `packaging/macos/entitlements-app.plist` for hardened runtime
+   - Entitlements must allow Python subprocess spawning and network access
+   - Verify bundle signature: `codesign -vvv IntervalsICU.app`
+
+2. **App Bundle Entitlements** (`entitlements-app.plist`)
+   - `com.apple.security.cs.allow-dyld-environment-variables`: true
+   - `com.apple.security.cs.allow-unsigned-executable-memory`: true
+   - `com.apple.security.network.client`: true (for intervals.icu API calls)
+   - All privacy-sensitive entitlements (camera, mic, contacts): false
+
+### DMG Signing Requirements (Phase 1)
+
+1. **Code Signing**
    - Sign DMG with valid Apple Developer ID certificate
    - Implement `codesign` command integration in build.sh
-   - Support both hardened runtime and standard runtime
+   - Sign DMG _after_ app bundle is already signed and placed inside
    - Preserve file permissions and structure during signing
    - Verify signature after signing: `codesign -v`
 
-2. **Entitlements** (Phase 1)
-   - Create `packaging/macos/entitlements-dmg.plist` for DMG
-   - Grant minimal required permissions (file read, basic app execution)
-   - Apply entitlements during signing: `codesign -s <identity> --entitlements <plist>`
+2. **DMG Entitlements** (`entitlements-dmg.plist`)
+   - Minimal permissions — DMG is a container, not an executable
+   - `com.apple.security.cs.allow-dyld-environment-variables`: true
 
 3. **Development vs Production** (Phase 1)
-   - Development builds: Ad-hoc signatures (no cert required)
-   - Production builds: Require `--sign <identity>` flag with valid cert
-   - Fallback messaging for missing certificates
+   - Development builds (no `--sign` flag): Build **succeeds** using ad-hoc signatures on both app bundle and DMG; prints prominent warning block with step-by-step certificate setup instructions
+   - Production builds: `--sign <identity>` flag applies Developer ID to both app bundle and DMG; build fails explicitly if specified cert is not found in Keychain
+   - Warning output must include: link to developer.apple.com/developer-id, Keychain import steps, and the exact `--sign` flag syntax to use once cert is installed
+
+4. **Signing Order** (critical)
+   - Step 1: Sign app bundle with `--deep --options runtime`
+   - Step 2: Place signed app bundle into DMG
+   - Step 3: Sign DMG container
+   - Step 4: Notarize DMG (Phase 2)
+   - Step 5: Staple approval to DMG
 
 ### Notarization Requirements (Phase 2)
 
@@ -213,10 +236,11 @@ Developer ID Installer Certificate (optional):
 ### Assumptions
 
 1. Developers have Xcode Command Line Tools installed
-2. Production builds will have Developer ID certificate in Keychain
-3. Notarization credentials available via environment variables (CI/CD)
-4. Users accept minor delays for production builds (~5-10 min with notarization)
-5. Ad-hoc signatures acceptable for development/testing
+2. **No Developer ID certificate currently available** — must be obtained before production signing (requires $99/year Apple Developer Program membership at developer.apple.com)
+3. Phase 1 implementation should include setup guidance for obtaining and installing the certificate
+4. Notarization credentials available via environment variables (CI/CD)
+5. Users accept minor delays for production builds (~5-10 min with notarization)
+6. Ad-hoc signatures acceptable for development/testing and as interim distribution fallback
 
 ### Constraints
 
@@ -238,7 +262,7 @@ Developer ID Installer Certificate (optional):
 
 **Effort**: ~3 hours
 
-### Phase 2: Notarization (Future Enhancement)
+### Phase 2: Notarization (In Scope — Same Feature)
 
 1. Create notarization wrapper using `xcrun notarytool`
 2. Implement credential management (environment variables)
@@ -248,14 +272,16 @@ Developer ID Installer Certificate (optional):
 
 **Effort**: ~4 hours
 
-### Phase 3: CI/CD Integration (Future)
+### Phase 3: CI/CD Integration (Out of Scope — Future Feature)
 
-1. GitHub Actions workflow for automated builds
-2. Environment variable setup for secrets
-3. Automated notarization on release branches
-4. Build artifact publication
+> **Deferred**: GitHub Actions automation is explicitly out of scope for this feature. Implement signing and notarization locally first; automate in a separate feature.
 
-**Effort**: ~2 hours
+- GitHub Actions workflow for automated builds
+- Environment variable setup for secrets
+- Automated notarization on release branches
+- Build artifact publication
+
+**Effort**: ~2 hours (future)
 
 ---
 
@@ -300,23 +326,37 @@ Developer ID Installer Certificate (optional):
 
 ---
 
+## Clarifications
+
+### Session 2026-06-17
+
+- Q: Do you have an Apple Developer ID Application certificate currently installed in your Mac Keychain? → A: No cert yet, willing to obtain one (requires $99/year Apple Developer account)
+- Q: Should notarization be included in this feature, or deferred to a future release? → A: Certificate + Notarization in same feature (Phases 1 & 2 together)
+- Q: Should a GitHub Actions CI/CD workflow be included in this feature? → A: No — defer CI/CD automation to a future feature; implement signing + notarization locally first
+- Q: Should the app bundle also be signed, or only the DMG container? → A: Sign both — Developer ID signs the app bundle AND the DMG for a fully verified chain
+- Q: When `build.sh` is run without `--sign`, what should happen? → A: Succeed with ad-hoc signatures + prominent warning + certificate setup instructions printed
+
 ## Open Questions / Clarifications
 
-- [NEEDS CLARIFICATION: Notarization Timeline] Should Phase 2 (notarization) be done immediately or deferred to future release?
-- [NEEDS CLARIFICATION: CI/CD Environment] Should GitHub Actions be configured now or defer to Phase 3?
+- [RESOLVED] Notarization is in scope for this feature (Phases 1 & 2 together)
+- [RESOLVED] CI/CD GitHub Actions is explicitly out of scope — deferred to a future feature
 
 ---
 
 ## Acceptance Criteria
 
-- ✅ DMG signed with developer certificate (or ad-hoc for dev)
+- ✅ App bundle signed with Developer ID before DMG creation
+- ✅ DMG signed with Developer ID after app bundle placed inside
 - ✅ User downloads fresh DMG and mounts with zero Gatekeeper warnings
 - ✅ Installation via install.sh succeeds post-mount
-- ✅ App launches with zero Gatekeeper warnings
-- ✅ `codesign -v` validation passes for both DMG and app bundle
-- ✅ Build script supports `--sign` and `--verbose` flags
+- ✅ App launches with zero Gatekeeper warnings (no prompt on first open)
+- ✅ `codesign -vvv` validation passes for app bundle with full certificate chain
+- ✅ `codesign -v` validation passes for DMG container
+- ✅ Apple notarization approved and stapled to DMG
+- ✅ Build script supports `--sign`, `--notarize`, and `--verbose` flags
+- ✅ Two entitlements files created: `entitlements-app.plist` and `entitlements-dmg.plist`
 - ✅ Fallback messaging for missing certificates
-- ✅ Documentation updated with signing process
+- ✅ Documentation updated with certificate setup guide and signing process
 
 ---
 
