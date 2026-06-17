@@ -29,6 +29,30 @@ A self-contained, production-ready desktop application for macOS and Windows. **
 2. Drag `IntervalsICU.app` to your Applications folder
 3. Launch from Applications or Spotlight search
 
+**Troubleshooting – "Can't be scanned for malware" Error**:
+
+If you see a macOS warning that the app "can't be opened because it can't be scanned for malware":
+
+**Option 1 — Quick Fix (Recommended):**
+
+```bash
+# Remove the quarantine attribute (one-time command)
+xattr -d com.apple.quarantine /Applications/IntervalsICU.app
+```
+
+**Option 2 — Using the Fix Script:**
+
+```bash
+# From the DMG, run the provided fix script
+./fix-gatekeeper.sh /Applications/IntervalsICU.app
+```
+
+**Option 3 — Manual Trust:**
+
+1. Right-click `IntervalsICU.app` and select "Open"
+2. Click "Open" in the security dialog (one-time prompt)
+3. App will be added to trusted apps
+
 **Windows** (Coming soon): NSIS installer in development
 
 ### ✨ Key Features

@@ -1,86 +1,74 @@
-# macOS Build Manifest - v1.0.0 (Signed)
+# IntervalsICU macOS Build Manifest
 
-**Build Date**: 2026-06-16  
-**Platform**: macOS  
-**Target**: IntervalsICU Desktop Application  
-**Status**: ✅ Complete & Code-Signed
-**Signature Type**: Ad-hoc (trusted locally)
+**Build Version**: 1.0.0  
+**Build Date**: 2024  
+**Platform**: macOS (arm64)  
+**DMG Size**: 33 MB
 
-## Build Artifacts
+## Code Signing
 
-| File                     | Size  | Type               | Status              |
-| ------------------------ | ----- | ------------------ | ------------------- |
-| `IntervalsICU-1.0.0.dmg` | 33 MB | Installer          | ✅ Code-signed      |
-| `IntervalsICU.app/`      | —     | Application Bundle | ✅ Signed & trusted |
+**Signature Type**: Ad-hoc (development)  
+**Signing Status**: ✅ Applied  
+**Runtime Hardening**: Enabled
 
-## Code Signing Details
+### Verification
 
-**Signature Type**: Ad-hoc (automatically trusted by macOS)
+To verify the app signature:
 
-- Format: app bundle with Mach-O thin (arm64)
-- Identifier: `IntervalsICU`
-- Flags: `adhoc,runtime` (0x10002)
-- Runtime: Hardened with entitlements
-- **Result**: ✅ macOS trusts app on first launch, no security warnings
+```bash
+codesign -dv /Applications/IntervalsICU.app
+```
+
+Expected output includes: `Signature=adhoc` and `flags=0x10002(adhoc,runtime)`
 
 ## Security Features
 
-- **Hardened Runtime**: Enabled for process security
-- **Keychain Access**: Secured credential storage
-- **Network Entitlements**: API calls to intervals.icu and Anthropic
-- **Process Spawning**: MCP server subprocess support
-- **Library Validation**: Disabled for Python compatibility
+- **Hardened Runtime**: Enabled for enhanced security
+- **Entitlements**: Configured for Python subprocess spawning, network access, and Keychain integration
+- **Quarantine Handling**: Documented method for users to remove quarantine attribute if needed
 
-## Installation Instructions
+## Gatekeeper Workaround
 
-1. Download and mount the DMG: `open IntervalsICU-1.0.0.dmg`
-2. Drag `IntervalsICU.app` to Applications folder
-3. Launch from Applications or Spotlight search
-4. **macOS will trust the app immediately** (no security prompts)
+If macOS blocks the app with "can't be scanned for malware" error:
 
-## Build Configuration
-
-- **Build Script**: `packaging/macos/build.sh`
-- **Entitlements**: `packaging/macos/entitlements.plist`
-- **Auto-signing**: Enabled by default (--no-sign to disable)
-- **Code Signing**: Ad-hoc by default, --sign for Developer ID
-
-## Requirements for Production Builds
-
-For distribution outside local development:
+### Quick Fix (Recommended)
 
 ```bash
-export DEVELOPER_ID_APP="Developer ID Application: Your Name (XXXXXXXXXX)"
-./packaging/macos/build.sh --sign --notarize
+xattr -d com.apple.quarantine /Applications/IntervalsICU.app
 ```
 
-Also requires:
+### Using Helper Script
 
-- `APPLE_ID` - Your Apple ID email
-- `APPLE_TEAM_ID` - Your Team ID
-- `APPLE_APP_PASSWORD` - App-specific password
+From the mounted DMG:
+
+```bash
+./fix-gatekeeper.sh /Applications/IntervalsICU.app
+```
+
+### Manual Trust
+
+1. Right-click IntervalsICU.app → Open
+2. Click "Open" in the security dialog
+3. App will be added to trusted apps
 
 ## Build Dependencies
 
-- Python 3.14.5
-- PyInstaller 6.11.0+
-- create-dmg 1.3.3
-- codesign (Xcode Command Line Tools)
-- macOS 12+ (for building)
-- Target: macOS 10.13+ (for running)
+- **PyInstaller** 6.11.0+ (Python application bundler)
+- **create-dmg** 1.3.3 (DMG creator)
+- **macOS codesign** (Apple code signing tool)
+- **Python** 3.14+ with tkinter support
 
-## Verification
+## Production Builds
 
-To verify the app signature locally:
+For production distribution with Developer ID certificates:
 
-```bash
-codesign -v dist/macos/IntervalsICU.app
-codesign -dv dist/macos/IntervalsICU.app  # Detailed info
-```
+- Requires Apple Developer account
+- Notarization required for distribution outside Mac App Store
+- Use `./build.sh --sign YOUR_DEVELOPER_ID --notarize`
 
-## Next Steps
+## Contents
 
-- ✅ Development testing on local Mac
-- ⏳ Windows build (NSIS installer)
-- 📦 Production build with Developer ID certificate
-- 📱 Distribution to App Store (future)
+- **IntervalsICU.app**: Application bundle
+- **IntervalsICU/**: Folder for Finder drag-and-drop installation
+- **fix-gatekeeper.sh**: Helper script for Gatekeeper quarantine removal
+- **BUILD_MANIFEST.md**: This file
