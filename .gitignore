@@ -20,6 +20,11 @@ __pycache__/
 venv/
 env/
 
+# Build scripts - explicitly tracked
+!packaging/macos/
+!packaging/macos/*.sh
+!packaging/macos/*.plist
+
 # IDE
 .vscode/
 .idea/
