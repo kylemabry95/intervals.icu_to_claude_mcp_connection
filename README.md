@@ -16,6 +16,21 @@ A standalone desktop application + Model Context Protocol (MCP) server that give
 
 A self-contained, production-ready desktop application for macOS and Windows. **No manual Claude Desktop configuration needed.** Just install, authenticate, and start asking Claude about your training data.
 
+### 📥 Downloads (v1.0.0)
+
+**✅ macOS** (Ready to download):
+
+- 📦 [IntervalsICU-1.0.0.dmg](dist/macos/IntervalsICU-1.0.0.dmg) (33 MB) — Ready for installation
+- 📋 [Build Details](dist/macos/BUILD_MANIFEST.md) — Build information and requirements
+
+**Installation**:
+
+1. Download and mount the DMG file
+2. Drag `IntervalsICU.app` to your Applications folder
+3. Launch from Applications or Spotlight search
+
+**Windows** (Coming soon): NSIS installer in development
+
 ### ✨ Key Features
 
 - 🔐 Secure credential storage via OS-native Keychain (macOS) / Credential Manager (Windows)
@@ -44,20 +59,21 @@ python -m desktop_app.main
 
 ### Build & Deploy
 
-**macOS** (creates a notarized `.dmg`):
+**macOS** — ✅ Build Complete
 
-```bash
-chmod +x packaging/macos/build.sh
-./packaging/macos/build.sh --version 1.0.0
-# Add --sign --notarize for production builds (requires Developer ID)
-```
+- Distributable `.dmg` available: [IntervalsICU-1.0.0.dmg](dist/macos/IntervalsICU-1.0.0.dmg)
+- Build branch: [`build/macos-dmg-v1.0.0`](https://github.com/kylemabry95/intervals.icu_to_claude_mcp_connection/tree/build/macos-dmg-v1.0.0)
+- To rebuild locally:
+  ```bash
+  chmod +x packaging/macos/build.sh
+  ./packaging/macos/build.sh --version 1.0.0
+  # Add --sign --notarize for production builds (requires Developer ID)
+  ```
 
-**Windows** (creates NSIS installer):
+**Windows** — In Development
 
-```powershell
-.\packaging\windows\build.ps1 -Version "1.0.0"
-# Add -Sign for production builds (requires cert thumbprint)
-```
+- NSIS installer coming soon
+- Build script: `packaging/windows/build.ps1`
 
 ### Testing
 
@@ -118,9 +134,17 @@ python server.py
 
 ## 🎉 What's New in v1.0.0
 
-**Standalone Desktop Application Release**
+**Standalone Desktop Application Release** — ✅ Now Available
 
 A complete rewrite bundling the MCP server with a Claude-powered conversational UI for macOS and Windows:
+
+**📦 Release Status:**
+
+- ✅ macOS (.dmg) — **Available** — [Download v1.0.0](dist/macos/IntervalsICU-1.0.0.dmg)
+- ⏳ Windows (NSIS) — In progress
+- ✅ Source code — Tagged [v1.0.0](https://github.com/kylemabry95/intervals.icu_to_claude_mcp_connection/releases/tag/v1.0.0)
+
+**Features:**
 
 - ✅ **Standalone Desktop App** — No Claude Desktop configuration needed
 - ✅ **Secure Credential Storage** — OS-native Keychain/Credential Manager integration

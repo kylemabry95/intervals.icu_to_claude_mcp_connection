@@ -46,7 +46,6 @@ mkdir -p "${DIST_DIR}" "${BUILD_DIR}"
 pyinstaller \
     --name "${APP_NAME}" \
     --windowed \
-    --icon "packaging/macos/icon.icns" \
     --add-data "server.py:." \
     --distpath "${DIST_DIR}" \
     --workpath "${BUILD_DIR}" \
@@ -73,7 +72,6 @@ DMG_PATH="${DIST_DIR}/${APP_NAME}-${VERSION}.dmg"
 echo "Creating DMG at ${DMG_PATH} …"
 create-dmg \
     --volname "${APP_NAME} ${VERSION}" \
-    --volicon "packaging/macos/icon.icns" \
     --window-pos 200 120 \
     --window-size 600 400 \
     --icon-size 100 \

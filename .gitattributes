@@ -1,0 +1,4 @@
+# Build artifacts and large binaries
+dist/macos/*.dmg binary diff=delta merge=binary
+build/windows/*.exe binary
+packaging/releases/** binary
