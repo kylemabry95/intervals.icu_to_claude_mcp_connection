@@ -36,3 +36,5 @@ env/
 .DS_Store
 Thumbs.db
 .specify/feature.json
+.agents/
+node_modules/
