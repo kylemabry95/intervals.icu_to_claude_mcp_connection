@@ -126,7 +126,7 @@ Users may encounter unfamiliar workflows or need guidance on how to interact wit
 - **FR-009**: Application MUST handle network errors (timeouts, disconnections) gracefully without crashing
 - **FR-010**: Application MUST provide clear, actionable error messages to users when failures occur
 - **FR-011**: Application MUST log errors and events for troubleshooting (accessible via settings panel)
-- **FR-012**: Application MUST support automatic updates to incorporate new features and security fixes. Update strategy: Scheduled checks with user prompts (daily by default); users can defer updates. Update mechanism: app checks for updates daily and notifies the user with an option to install now or defer.
+- **FR-012**: Application MUST support automatic updates to incorporate new features and security fixes. Update strategy: Scheduled checks with user prompts (daily by default); users can defer updates up to 3 times before being re-prompted after 2 days; annual opt-out available. Update mechanism: app checks for updates daily and notifies the user with an option to install now, defer, or disable checks. Deferred updates must not block normal app functionality.
 - **FR-013**: Application MUST work on macOS and Windows (initial v1 targets). Linux support may be considered in later releases.
 
 ### Key Entities

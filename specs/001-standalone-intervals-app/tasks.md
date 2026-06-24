@@ -32,7 +32,7 @@
 **Purpose**: Core components required before implementing user stories.
 
 **CRITICAL**: No user story work starts until this phase is complete.
-
+- [ ] T006b [P] **GATE: Validate AI Token Budget** — Review conversation model (T032 design), MCP tool definitions in `server.py`, and prompt templates for compliance with constitution principle I (AI Cost Optimization). Document token budget assumptions in `specs/001-standalone-intervals-app/contracts/token-budget.md` before Phase 3 stories begin. This ensures query latency and cost targets are achievable.
 - [x] T007 Implement desktop app configuration loader and validation in `desktop_app/config.py`
 - [x] T008 [P] Implement secure credential abstraction (Keychain/Credential Manager adapters) in `desktop_app/security/credentials.py`
 - [x] T009 [P] Implement MCP server process manager (start/stop/health/state) in `desktop_app/runtime/mcp_process.py`

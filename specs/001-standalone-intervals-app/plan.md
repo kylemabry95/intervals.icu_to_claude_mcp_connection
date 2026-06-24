@@ -22,6 +22,10 @@ Deliver a user-friendly desktop application that bundles the existing MCP server
 
 **Performance Goals**: p95 query latency < 5s; handle 10k+ training records without degradation
 
+**Timeouts**: MCP call timeout: 30s; intervals.icu API call timeout: 10s; Claude API call timeout: 60s
+
+**IPC Architecture**: Application communicates with local MCP server via **stdio-based JSON-RPC protocol**. No WebSocket or network-exposed ports. MCP server runs as a managed subprocess of the desktop app; all requests flow through in-process or local IPC channels.
+
 **Constraints**: Must follow constitution: cost-optimization, testing, security, reproducibility
 
 **Scale/Scope**: Single-user local application; later multi-account or Linux support can be added
@@ -52,9 +56,9 @@ Outputs: `data-model.md`, `contracts/`, `quickstart.md` (created alongside this 
 Key design tasks:
 - Define Python-native packaging workflow for macOS and Windows installers
 - Define desktop UI architecture in `desktop_app/ui/` for auth, chat, settings, and help screens
-- Define IPC between UI and MCP server (use local stdio proxy or WebSocket adapter)
+- Finalize IPC protocol between UI and MCP server (stdio-based JSON-RPC confirmed; see Technical Context)
 - Define secure credential storage and retrieval path per OS
-- Define update-check service and UX (daily scheduled checks, user deferral)
+- Define update-check service and UX (daily scheduled checks, user deferral: max 3 consecutive deferrals; re-prompt after 2 days; users can opt-out of checks annually)
 
 ## Phase 2: Implementation Tasks (high-level)
 
