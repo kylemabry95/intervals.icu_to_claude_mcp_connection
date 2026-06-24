@@ -1,0 +1,155 @@
+:root {
+  --bg: #f4f1ea;
+  --ink: #1f2a30;
+  --accent: #1a8f6a;
+  --panel: #ffffff;
+  --warn: #7a5c00;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Avenir Next", "Segoe UI", sans-serif;
+  color: var(--ink);
+  background: radial-gradient(circle at 20% 20%, #fff7e8, var(--bg));
+}
+
+.preview-shell {
+  max-width: 920px;
+  margin: 2rem auto;
+  padding: 1.25rem;
+  background: var(--panel);
+  border-radius: 14px;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.08);
+}
+
+.preview-header h1 {
+  margin: 0;
+}
+
+.demo-badge {
+  display: inline-block;
+  margin-top: 0.5rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  background: #d8f5ea;
+  color: #0e6246;
+}
+
+.preview-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+.tab {
+  border: 1px solid #d0d7de;
+  background: #fff;
+  padding: 0.45rem 0.8rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.tab.active {
+  border-color: var(--accent);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.panel {
+  display: none;
+  border: 1px solid #e5e8eb;
+  border-radius: 10px;
+  padding: 1rem;
+  background: #fff;
+}
+
+.panel.active {
+  display: block;
+}
+
+.chat-history {
+  min-height: 180px;
+  margin-bottom: 0.75rem;
+  border: 1px solid #edf0f2;
+  border-radius: 8px;
+  padding: 0.75rem;
+  background: #fafbfc;
+}
+
+.chat-message {
+  margin: 0.5rem 0;
+}
+
+.chat-message.user {
+  text-align: right;
+  color: #1d4f8f;
+}
+
+.chat-form {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.chat-form input {
+  padding: 0.55rem;
+  border: 1px solid #c8d0d7;
+  border-radius: 8px;
+}
+
+.chat-form button {
+  justify-self: start;
+  border: none;
+  background: var(--accent);
+  color: white;
+  padding: 0.5rem 0.9rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.disclaimer {
+  margin-top: 0.75rem;
+  font-size: 0.92rem;
+  color: var(--warn);
+}
+
+.preview-footer {
+  margin-top: 1rem;
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.cta {
+  text-decoration: none;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  padding: 0.45rem 0.75rem;
+  border-radius: 8px;
+}
+
+.fallback {
+  margin-top: 1rem;
+  padding: 0.7rem;
+  border-radius: 8px;
+  background: #fff7e0;
+  color: #6b4f00;
+}
+
+.hidden {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  .preview-shell {
+    margin: 0.5rem;
+    border-radius: 10px;
+  }
+
+  .preview-tabs {
+    overflow-x: auto;
+  }
+}

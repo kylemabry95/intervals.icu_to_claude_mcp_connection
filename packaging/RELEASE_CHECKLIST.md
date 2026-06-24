@@ -6,6 +6,7 @@ Use this checklist for every production release of the IntervalsICU desktop appl
 
 - [ ] All tests pass: `pytest tests/ -v -m "not e2e"` → 0 failures
 - [ ] SC-004 evaluation passes: `pytest tests/evaluation/ -v` → pass rate ≥ 95%
+- [ ] All commits included in release are signed: `git log --show-signature --oneline origin/main..HEAD` shows valid signatures
 - [ ] No hardcoded secrets in codebase: `git grep -r "API_KEY\|password\|secret" -- "*.py"` returns no real values
 - [ ] `.env` is NOT committed: `git status` shows no `.env` file
 - [ ] `requirements.txt` up to date and pinned to compatible versions

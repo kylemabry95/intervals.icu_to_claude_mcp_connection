@@ -1,0 +1,18 @@
+[
+  {
+    "scenario_id": "settings_updates",
+    "title": "Update preferences",
+    "category": "settings",
+    "expected_outcome_summary": "User sees update check controls",
+    "enabled": true,
+    "priority": "p3"
+  },
+  {
+    "scenario_id": "settings_logs_help",
+    "title": "Logging and help preview",
+    "category": "help",
+    "expected_outcome_summary": "User sees diagnostics and help tour",
+    "enabled": true,
+    "priority": "p3"
+  }
+]

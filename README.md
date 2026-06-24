@@ -223,6 +223,41 @@ python server.py
 
 ---
 
+## 🖼️ Pre-Download UI Preview
+
+Feature 004 adds a desktop-first browser preview so users can try the core chat UX before downloading the DMG.
+
+### Run locally
+
+```bash
+# from repository root
+python -m http.server 8000
+# then open http://localhost:8000/preview/
+```
+
+### What the preview includes
+
+- Interactive chat demo with deterministic simulated responses
+- Authentication walkthrough with API-key guidance links
+- Settings/help feature tour
+- Download CTAs for macOS and Windows
+- Fallback banner when preview modules fail to initialize
+
+### Validation tests
+
+```bash
+pytest tests/unit/test_preview_templates.py \
+  tests/unit/test_preview_no_live_llm.py \
+  tests/unit/test_preview_accessibility.py -v
+
+pytest tests/integration/test_preview_*.py -v
+pytest tests/e2e/test_preview_*.py -v
+```
+
+This preview intentionally uses sample data only and never accepts real credentials.
+
+---
+
 ## 🎉 What's New in v1.0.0
 
 **Standalone Desktop Application Release** — ✅ Now Available

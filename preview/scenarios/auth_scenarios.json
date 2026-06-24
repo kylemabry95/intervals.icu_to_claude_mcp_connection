@@ -1,0 +1,18 @@
+[
+  {
+    "scenario_id": "auth_key_entry",
+    "title": "API key onboarding",
+    "category": "auth",
+    "expected_outcome_summary": "User learns where to paste API key",
+    "enabled": true,
+    "priority": "p2"
+  },
+  {
+    "scenario_id": "auth_guidance",
+    "title": "Get API key instructions",
+    "category": "auth",
+    "expected_outcome_summary": "User sees intervals.icu guidance link",
+    "enabled": true,
+    "priority": "p2"
+  }
+]

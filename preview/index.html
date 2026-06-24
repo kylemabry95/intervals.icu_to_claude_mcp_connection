@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IntervalsICU Preview</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="preview-shell" aria-label="IntervalsICU preview">
+      <header class="preview-header">
+        <h1>Try IntervalsICU Before You Download</h1>
+        <p class="demo-badge" role="status">Demo mode: no real account required</p>
+      </header>
+
+      <nav class="preview-tabs" aria-label="Preview sections">
+        <button class="tab active" data-tab="chat" id="tab-chat">Chat</button>
+        <button class="tab" data-tab="auth" id="tab-auth">Auth</button>
+        <button class="tab" data-tab="settings" id="tab-settings">Settings</button>
+        <button class="tab" data-tab="help" id="tab-help">Help</button>
+      </nav>
+
+      <section class="panel active" id="panel-chat" aria-labelledby="tab-chat">
+        <div id="chat-history" class="chat-history" aria-live="polite"></div>
+        <form id="chat-form" class="chat-form">
+          <label for="chat-input">Ask a sample training question</label>
+          <input id="chat-input" name="chat-input" placeholder="Show my recent workouts" />
+          <button type="submit">Send</button>
+        </form>
+        <p id="chat-disclaimer" class="disclaimer"></p>
+      </section>
+
+      <section class="panel" id="panel-auth" aria-labelledby="tab-auth">
+        <div id="auth-content"></div>
+      </section>
+
+      <section class="panel" id="panel-settings" aria-labelledby="tab-settings">
+        <div id="settings-content"></div>
+      </section>
+
+      <section class="panel" id="panel-help" aria-labelledby="tab-help">
+        <div id="help-content"></div>
+      </section>
+
+      <footer class="preview-footer">
+        <a id="download-macos" class="cta" href="#" data-platform="macos">Download for macOS (.dmg)</a>
+        <a id="download-windows" class="cta" href="#" data-platform="windows">Download for Windows</a>
+      </footer>
+
+      <section id="fallback-banner" class="fallback hidden" aria-live="assertive">
+        Preview temporarily unavailable. You can still download the app below.
+      </section>
+    </main>
+
+    <script type="module" src="preview.js"></script>
+  </body>
+</html>

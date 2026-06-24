@@ -1,0 +1,20 @@
+[
+  {
+    "scenario_id": "chat_recent_workouts",
+    "title": "Recent workouts summary",
+    "category": "chat",
+    "prompt_seed": "Show my recent workouts",
+    "expected_outcome_summary": "Preview returns deterministic workout summary",
+    "enabled": true,
+    "priority": "p1"
+  },
+  {
+    "scenario_id": "chat_training_load",
+    "title": "Training load insight",
+    "category": "chat",
+    "prompt_seed": "Who has highest training load this week?",
+    "expected_outcome_summary": "Preview shows ranked load summary from demo dataset",
+    "enabled": true,
+    "priority": "p1"
+  }
+]

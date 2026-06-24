@@ -195,3 +195,32 @@ If you're still having issues:
 1. Check the debug output in Claude Desktop logs
 2. Test your API key with curl
 3. Open a GitHub issue with the debug output (redact your API key!)
+
+---
+
+## Feature 004: UI Preview Before Download
+
+The repository includes a browser-hosted preview under `preview/` for pre-download product exploration.
+
+### Local preview workflow
+
+```bash
+# from repo root
+python -m http.server 8000
+# open http://localhost:8000/preview/
+```
+
+### Maintenance checklist
+
+- Keep `preview/scenarios/*.json` aligned with current UX copy and capabilities
+- Keep `preview/template_engine.js` deterministic (no live API/LLM calls)
+- Keep CTA links HTTPS-only in `preview/cta.js`
+- Re-run preview tests after any UI text/flow change:
+
+```bash
+pytest tests/unit/test_preview_*.py tests/integration/test_preview_*.py tests/e2e/test_preview_*.py -v
+```
+
+### Security boundary
+
+Preview mode must never collect or process real API keys, tokens, or user-identifying training data.
